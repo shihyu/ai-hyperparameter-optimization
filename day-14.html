@@ -1,0 +1,371 @@
+<!DOCTYPE HTML>
+<html lang="zh-TW" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Day 14 無痛入門！淺談Optuna最佳化 - 調整AI超參數好煩躁？來試試看最佳化演算法吧！</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">調整AI超參數好煩躁？來試試看最佳化演算法吧！</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="day-14無痛入門淺談optuna最佳化"><a class="header" href="#day-14無痛入門淺談optuna最佳化">[Day 14]無痛入門！淺談Optuna最佳化</a></h1>
+<ul>
+<li>Day: 14</li>
+<li>Date: 2024-09-20 00:21:28</li>
+<li>Author: golucky_sir</li>
+<li>Source: https://ithelp.ithome.com.tw/articles/10354688</li>
+<li>Series: https://ithelp.ithome.com.tw/2020-12th-ironman/articles/7610</li>
+<li>Series Title: 調整AI超參數好煩躁？來試試看最佳化演算法吧！</li>
+</ul>
+<h2 id="前言"><a class="header" href="#前言">前言</a></h2>
+<p>今天終於要來進入程式實作的部分了，今天要介紹的函式庫在<a href="https://ithelp.ithome.com.tw/articles/10350696">前幾天</a>也有介紹過，Optuna是一個相當有名的套件，今天就來看看它可以幹嘛吧。</p>
+<h2 id="基本範例"><a class="header" href="#基本範例">基本範例</a></h2>
+<p><a href="https://optuna.org/">Optuna</a>是一個專門用於深度學習模型或者機器學習模型超參數調整的套件，其背後的演算法基本上與啟發式演算法又有一些差別，這個套件使用的演算法我會在之後額外介紹。<br />
+那接下來先來看看官網的範例程式吧，我有加上一些註解方便各位更理解程式！</p>
+<pre><code>import optuna
+# 定義目標函數(或稱適應函數fitness function)的計算方式
+def objective(trial):
+    # 新增帶入解中的元素，本例只有一個變數，所以只定義一個變數x。
+    x = trial.suggest_float('x', -10, 10)
+    # 回傳適應值(fitness value)
+    return (x - 2) ** 2
+
+# 新增一個最佳化的「試驗」變數
+study = optuna.create_study()
+# 讓該試驗進行最佳化，目標函數為objective，試驗次數n_trials為100次
+study.optimize(objective, n_trials=100)
+
+# 將試驗中的最佳解print出來。
+print(study.best_params)  # E.g. {'x': 2.002108042}
+</code></pre>
+<p>以上是官方給出的基本範例，接下來我會來詳細說明這段程式碼在幹嘛，在這之前首先要安裝Optuna(<code>pip install optuna</code>)。</p>
+<ol>
+<li>
+<p><strong>定義目標函數</strong>：通常會寫<code>def objective(trial):</code>來代表定義的目標函數，<code>trial</code>要記得加上去，演算法要進行試驗時會使用到trail這個變數，也就是演算法後端會使用到，所以必須得加上去。</p>
+</li>
+<li>
+<p><strong>新增要帶入目標函數的變數</strong>：本範例要求計算(x-2)^2的最小值，基本上這就是當x=2時會有最小值0。接著我們有了問題，接下來要考慮帶入問題的<strong>因素</strong>(之前提到的5W1H中的What)，以及這些因素的<strong>範圍</strong>(5W1H中的Where)。</p>
+<ul>
+<li>因素-資料型態：因為只有一個變數，所以我們可以定義為x，其中x為浮點數(<code>trial.suggest_float</code>)，定義浮點數之後，</li>
+<li>因素-名稱：接著要定義該變數的名稱<code>'x'</code>，這步驟是為了在之後可以確認這個變數代表的意思，要注意<strong>變數名稱不能重複</strong>！！否則程式會噴錯誤。</li>
+<li>因素-範圍：最後就是定義變數的範圍了，以本例子來說是-10~10的浮點數。</li>
+</ul>
+<blockquote>
+<p>這行程式的用法就是：<code>trial.suggest_float(變數名稱, 範圍最小值, 範圍最大值)</code></p>
+</blockquote>
+</li>
+<li>
+<p><strong>定義回傳適應值</strong>：此步驟就return一個浮點數數值就好了，本例是回傳(x-2)^2的值。</p>
+</li>
+<li>
+<p><strong>定義一個試驗</strong>：<code>study = optuna.create_study()</code>就是新增一個試驗，<code>study</code>就是這次最佳化試驗的變數，所有資料都會儲存在此，後續要應用最佳化也是使用此變數的方法去實現。</p>
+</li>
+<li>
+<p><strong>執行最佳化</strong>：此步驟會讓試驗<code>study</code>進行最佳化，程式碼為<code>study.optimize(要試驗的目標副程式, n_trials=試驗次數)</code>。試驗的目標副程式<strong>不用</strong>像以往調用方法那樣加上括號<code>objective()</code>以及輸入參數，只需要將副程式<strong>名稱</strong>當作<code>optimize</code>方法的參數輸入就好了。</p>
+</li>
+<li>
+<p><strong>將最佳解print出來</strong>：此部分就沒什麼好說的了，直接把最佳解給print出來XD</p>
+</li>
+</ol>
+<h2 id="optuna開發注意事項"><a class="header" href="#optuna開發注意事項">Optuna開發注意事項</a></h2>
+<p>接下來各位可能還想再更近一步去理解Optuna的其他事項，這邊我幫各位整理出一個開發流程，我接下來會跟著流程一步一步改掉範例程式並變成我們實際上會用到的程式。這個流程也可以幫助各位快速入門使用Optuna時需要注意的事項以及確認有沒有遺漏程式！<br />
+基本上根據上個段落的流程已經差不多了，不過我們要再加入一些細節！以下為使用Optuna的開發流程。</p>
+<p>這次任務我想來使用Optuna來尋找Schaffer Function N.2的最佳解，關於這個測試函數可以看看<a href="">第五天</a>第9個介紹的測試函數。複習一下函數的資訊：</p>
+<blockquote>
+<p>Schaffer Function N.2輸入的未知數數量限制2個；解空間元素值建議範圍為-100~100；最佳解為解空間元素皆為0；此時最佳適應值為0。</p>
+</blockquote>
+<ol>
+<li>
+<p><strong>定義目標函數</strong>：<code>def objective(trial):</code>這部分不用變動，就是建立我們需要最佳化問題的副程式，所有計算都要在此副程式中完成。例如分類模型最佳化，就要在這個副程式中完成訓練並評估準確率等指標並作為適應值回傳。</p>
+</li>
+<li>
+<p><strong>新增要帶入目標函數的變數</strong>：這個函數接受兩個變數輸入x1跟x2，所以接下來要來定義這些東東了。<br />
+2-1. 定義x1：要注意<code>x1</code>的變數名稱以及上下限，程式碼為：<code>x1 = trial.suggest_float('x1', -100, 100)</code>。<br />
+2-2. 定義x2：基本上條件相同，但要注意名稱不同，<strong>千萬別複製貼上卻忘了改變數名稱！</strong>，程式碼為<code>x2 = trial.suggest_float('x2', -100, 100)</code>。<br />
+2-3. 進行處理：有時候變數可能要先進行處理再帶入問題，這部分不一定需要進行。但在這例子我們要將兩個變數帶入Schaffer Function N.2中，所以可以將這兩個變數包成一個<code>list</code>後續再輸入至測試函數中。就像<code>x = [x1, x2]</code>。</p>
+<p>各位可能很好奇變數只能使用浮點數嗎？當然沒有Optuna支援多種輸入類型，整數、類別等，以下將介紹比較常用的變數類型，最常用的有三種，因為這三種足以處理幾乎所有問題了。</p>
+<ul>
+<li><strong>整數變數</strong>：通常使用<code>trial.suggest_int('整數變數名稱', 最小值, 最大值, step=步進值或公差值)</code>，<code>step</code>變數是選用的參數，預設值為1。他可以控制整數變數的公差(<strong>只能設定為整數</strong>)，例如設定<code>trial.suggest_int(f'int', 1, 5, step=2)</code>那試驗時會產生的數字就是從<code>1,3,5</code>中選一個。<code>trial.suggest_int(f'int', 1, 5)</code>那試驗時會產生的數字就是從<code>1,2,3,4,5</code>中選一個。</li>
+<li><strong>浮點數變數</strong>：之前介紹過了，使用<code>trial.suggest_float('浮點數變數名稱', 最小值, 最大值, step=步進值或公差值)</code>。功能和整數基本上相同，只是資料型態的差別而已，這個方法的<code>step</code>可以設定浮點數。</li>
+<li><strong>類別變數</strong>：通常我們可能在選用優化器或者特定功能時會有需要進行選擇的需求，但這些東西並非一個數字。所以此時我們可以用<code>trial.suggest_categorical("類別名稱", [類別1, 類別2, 類別3])</code>，此時試驗時就會從這三個類別中選一個出來帶入問題，類別的<code>list</code>中的資料型態沒有限制，可以是任何型態，只要帶入沒有問題就好。</li>
+</ul>
+</li>
+<li>
+<p><strong>新增其他功能</strong>：通常在回傳結果前可以的話通常會將此次試驗的資料與結果等都進行儲存，儲存方式有很多，可以寫入csv檔案、使用txt檔案儲存資料、將結果進行plt繪圖並儲存圖片等。原則上為了更好分析實驗結果這步驟就會根據需求來儲存該次試驗的資料。<br />
+另外也可以根據使用者的需求去新增更多不同功能，就是比較彈性的部分~</p>
+</li>
+<li>
+<p><strong>定義回傳適應值</strong>：此步驟只需要回傳Schaffer Function N.2的適應值就好了，不過有時候遇到比較難計算的情況就一步一步慢慢計算出結果最後再return吧。我們可以用<a href="">第8天</a>介紹的程式碼來當作回傳，這段程式碼需要輸入一個<code>list</code>或者<code>np.ndarray</code>，此時剛剛第2-3步驟的處理就能派上用場了。<br />
+4-1. 處理計算的部分：這邊就直接把副程式拿來用了，將測試函數的副程式獨立定義。</p>
+<pre><code>def schaffer_function_N2(x: Union[np.ndarray, list]):
+assert len(x) == 2, 'x的長度必須為2!'
+return 0.5 + (np.sin(x[0]**2-x[1]**2)**2 - 0.5) / (1+0.001*(x[0]**2+x[1]**2))**2
+</code></pre>
+<p>4-2. 定義回傳值：在<code>objective</code>方法中我們要定義適應值回傳的功能，程式為<code>return schaffer_function_N2(x)</code>。</p>
+</li>
+<li>
+<p><strong>定義一個試驗</strong>：新增一個試驗<code>study = optuna.create_study()</code>，這邊可以注意一下，<strong>定義問題的目標</strong>也是在這段程式碼中設定，沒有設定就會自動預設為最小化目標。</p>
+<ul>
+<li>如果今天是要最大化是應值的話可以這樣寫：<code>study = optuna.create_study(direction='maximize')</code>。</li>
+<li>如果今天是要最小化是應值的話可以這樣寫：<code>study = optuna.create_study(direction='minimize')</code>。</li>
+</ul>
+</li>
+<li>
+<p><strong>執行最佳化</strong>：這部分不太需要更改，不過各位可以嘗試將試驗次數<code>n_trials</code>增加看看~要注意之後如果是深度學習模型最佳化等應用的話，通常試驗一次就會執行一次<code>objective</code>副程式，所以要注意<strong>試驗次數上與時間消耗的問題</strong>喔！這邊我給它試驗1000次：<code>study.optimize(objective, n_trials=1000)</code>。</p>
+</li>
+<li>
+<p><strong>將最佳解print出來</strong>：我們可以使用<code>print(study.best_value)</code>來將歷史最佳適應值給列印出來；用<code>print(study.best_params)</code>將歷史最佳解print出來。結果就如下圖：<br />
+<img src="images/day-14/01.png" alt="https://ithelp.ithome.com.tw/upload/images/20240507/201510292lGKzlUT7s.png" /></p>
+</li>
+<li>
+<p><strong>查看程式執行過程</strong>：在Optuna演算時各位會看到一些訊息，那是每次試驗時的適應值、帶入問題的解、出現目前最佳解的試驗編號、該最佳解的適應值。具體如下，因為圖片較長，完整放圖會使圖片字體變太小，所以分成左右兩張：<br />
+<img src="images/day-14/02.png" alt="https://ithelp.ithome.com.tw/upload/images/20240507/201510299dlSU4GSvv.png" /><br />
+<img src="images/day-14/03.png" alt="https://ithelp.ithome.com.tw/upload/images/20240507/20151029pevGMA6Tg7.png" /></p>
+<blockquote>
+<p>通常這步驟也會包含後續處理分析的部分，可以根據執行結果規劃第二次最佳化，並且再根據需求新增一些功能。</p>
+</blockquote>
+</li>
+</ol>
+<h2 id="結語"><a class="header" href="#結語">結語</a></h2>
+<p>今天介紹了Optuna跟介紹了基本建立程式的方式與流程，以及使用Optuna的一些注意事項，明天會更詳細的介紹Optuna的一些API(雖然今天講得差不多了XD)，並帶各位展示幾個範例，讓各位後續實驗測試的程式可以更加完整，掌握了這些功能後相信各位在最佳化應用中可以更加完整的撰寫程式。</p>
+<h2 id="附錄求schaffer-function-n2最佳解的完整程式"><a class="header" href="#附錄求schaffer-function-n2最佳解的完整程式">附錄：求Schaffer Function N.2最佳解的完整程式</a></h2>
+<pre><code>import optuna
+import numpy as np
+from typing import Union
+
+def schaffer_function_N2(x: Union[np.ndarray, list]):
+    assert len(x) == 2, 'x的長度必須為2!'
+    return 0.5 + (np.sin(x[0]**2-x[1]**2)**2 - 0.5) / (1+0.001*(x[0]**2+x[1]**2))**2
+
+def objective(trial):
+    x1 = trial.suggest_float('x1', -100, 100)
+    x2 = trial.suggest_float('x2', -100, 100)
+    x = [x1, x2]
+    return schaffer_function_N2(x)
+
+study = optuna.create_study(direction='minimize')
+study.optimize(objective, n_trials=1000)
+
+print('歷史最佳適應值：',study.best_value)
+print('歷史最佳解：', study.best_params)
+</code></pre>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="day-13.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="day-15.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="day-13.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="day-15.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
+
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    </body>
+</html>

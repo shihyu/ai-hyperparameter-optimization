@@ -1,0 +1,291 @@
+<!DOCTYPE HTML>
+<html lang="zh-TW" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Day 18 Optuna的背後演算法，TPE介紹 - 調整AI超參數好煩躁？來試試看最佳化演算法吧！</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">調整AI超參數好煩躁？來試試看最佳化演算法吧！</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="day-18optuna的背後演算法tpe介紹"><a class="header" href="#day-18optuna的背後演算法tpe介紹">[Day 18]Optuna的背後演算法，TPE介紹</a></h1>
+<ul>
+<li>Day: 18</li>
+<li>Date: 2024-09-24 00:00:44</li>
+<li>Author: golucky_sir</li>
+<li>Source: https://ithelp.ithome.com.tw/articles/10357248</li>
+<li>Series: https://ithelp.ithome.com.tw/2020-12th-ironman/articles/7610</li>
+<li>Series Title: 調整AI超參數好煩躁？來試試看最佳化演算法吧！</li>
+</ul>
+<h2 id="前言"><a class="header" href="#前言">前言</a></h2>
+<p>昨天帶各位使用了Optuna進行機器學習的最佳化，算是先讓各位見識一下Optuna在機器學習模型參數調整上的結果。不過再進入其他模型最佳化的應用時我想先跳出來向各位介紹一下Optuna中預設的採樣器(sampler)，也就是Tree-structured Parzen Estimator (TPE)演算法。<br />
+接下來就來介紹TPE演算法的背後原理~</p>
+<h2 id="tpe介紹"><a class="header" href="#tpe介紹">TPE介紹</a></h2>
+<p>TPE演算法是基於<strong>貝葉斯最佳化</strong>的一種專門用於「超參數調校」的演算法，既然是用於超參數最佳化的演算法，那他就是用於在大量參數的搜索空間中找出最佳的參數組合。<br />
+TPE演算法主要使用<strong>機率密度估計</strong>的方式來從搜索空間中採樣，藉此在較短的時間中找到能帶來最佳適應值的參數組合。</p>
+<blockquote>
+<p>若對演算法有興趣也歡迎直接去看看<a href="https://proceedings.neurips.cc/paper_files/paper/2011/file/86e8f7ab32cfd12577bc2619bc635690-Paper.pdf">TPE的原始論文</a>喔！</p>
+</blockquote>
+<h2 id="tpe概念"><a class="header" href="#tpe概念">TPE概念</a></h2>
+<p>TPE的主要概念是使用<strong>兩個機率密度函數(Probability Density Function, PDF)<strong>來對超參數的</strong>條件機率分布</strong>進行建模，<a href="https://zh.wikipedia.org/zh-tw/%E6%A9%9F%E7%8E%87%E5%AF%86%E5%BA%A6%E5%87%BD%E6%95%B8">機率密度函數</a>是用於描述隨機變數值在某個確定的點附近機率的函數。</p>
+<p>這兩個機率密度函數有不同的功能，其中一條用來針對適應值佳的超參數組合(better group)的機率密度函數進行建模，另一條就是用來針對較差的超參數組合(worse group)的機率密度函數，透過計算來不斷的更新這兩條機率密度函數的樣子。後續採樣方式就會靠近較佳參數組合那端，遠離較差組合那端。</p>
+<h2 id="tpe適用場景"><a class="header" href="#tpe適用場景">TPE適用場景</a></h2>
+<p>TPE因為該演算法可以自適應兩個機率密度函數的樣子並從中採樣，所以可以快速的找到全局最佳解，演算法主要適用的情形為：</p>
+<ol>
+<li>尋解的超參數組合並不多，通常會限制在20個以內。</li>
+<li>最佳化的目標很難透過求梯度去進行最佳化，例如很難探討模型學習率與誤差之間的關係，基本上也不可能將這輛兩個關係進行建模並求導數。</li>
+<li>最佳化目標是要花類大量時間求得的函數，例如訓練完模型再去計算模型測試資料的準確率。</li>
+</ol>
+<h2 id="tpe原理"><a class="header" href="#tpe原理">TPE原理</a></h2>
+<p>接下來要來討論TPE的原理了，首先根據原始論文的定義我們可以從以下公式看到兩個組合的部分，l(x)是較佳組；g(x)是較差組；x為帶入的解；y為根據此帶入解計算出的適應值；y*為一個閥值，計算出來的結果為p(x|y)。<br />
+<img src="images/day-18/01.png" alt="https://ithelp.ithome.com.tw/upload/images/20240509/20151029ezrqKAWGz3.png" /></p>
+<p>TPE使用**期望改進(Expected Improvement，EI)**作為採樣的方式，EI在TPE論文中被使用的公式如下：<br />
+<img src="images/day-18/02.png" alt="https://ithelp.ithome.com.tw/upload/images/20240509/20151029RDCbg4dPpT.png" /></p>
+<p>不過我們並無法取得p(y|x)，所以只能使用<a href="https://zh.wikipedia.org/zh-tw/%E8%B4%9D%E5%8F%B6%E6%96%AF%E5%AE%9A%E7%90%86">貝氏定理</a>進行轉換，根據原式轉換後的結果為：<br />
+<img src="images/day-18/03.png" alt="https://ithelp.ithome.com.tw/upload/images/20240509/20151029nviWkPvGac.png" /></p>
+<p>經過貝式定理轉換後我們得到了<img src="images/day-18/04.png" alt="https://ithelp.ithome.com.tw/upload/images/20240509/20151029xOzJcoVUMY.png" /> 之後可以發現，p(x|y)為一開始的結果，然後p(x)與p(y)也可以經過建模取得。</p>
+<ul>
+<li><strong>p(x)(分母)的建構</strong>：根據論文中的說明(4.1章節中方程式3的下一行)<br />
+<img src="images/day-18/05.png" alt="https://ithelp.ithome.com.tw/upload/images/20240509/2015102984ucObSVZq.png" /><br />
+可以知道作者新設定了一個變數<em>γ</em>，作為TPE中的一個分界的概念，這個變數可以用來將l(x)與g(x)分開，也就是說剛剛p(x|y)的公式可以使用<em>γ</em>來簡化成一個公式：<img src="images/day-18/06.png" alt="https://ithelp.ithome.com.tw/upload/images/20240509/20151029fSoHNJkHzg.png" /> 。<br />
+另外機率分布p(y)的積分會等於1，所以結果就會變成如上公式。<br />
+<em>γ</em>的值在0~1之間。這句話的最後一個表示式就代表今天如果有100個解帶入並取得了相應的結果，而<em>γ</em>設定成0.05的話，那就會使用最好的5個結果構建分布l(x)；另外95個不好的結果構建分布g(x)。</li>
+<li><strong>P(y)(分子)的建構</strong>：根據論文的說明如下，分子的部分可以得到如此的結果，這部分比較不重要。<br />
+<img src="images/day-18/07.png" alt="https://ithelp.ithome.com.tw/upload/images/20240509/20151029zKervuDILZ.png" /></li>
+</ul>
+<p>建構完分子與分母後我們可以將他們帶入到採樣方式EI，接著就會變成如下的樣子。<img src="images/day-18/08.png" alt="https://ithelp.ithome.com.tw/upload/images/20240509/20151029I34uqjIq6i.png" /><br />
+剛剛求到的分母部分若同除以l(x)就會得到<img src="images/day-18/09.png" alt="https://ithelp.ithome.com.tw/upload/images/20240509/20151029sSn93Kayq2.png" /> ，接著剛剛帶入後的EI結果會與分母部分的倒數成正比，所以就可以寫成如上的表達式。</p>
+<p>為了最大化這個EI我們可以看到剛剛成正比的分母倒數，倒數完之後可以看到其中有一個部分l(x)/g(x)，從直觀的想法我們希望<strong>帶入解x會出現在較佳組l(x)的機率高，在較差組g(x)的機率低</strong>，所以l(x)/g(x)要最大化，這樣採樣出來的結果出現較佳情況的可能性才會高。</p>
+<p>不過昨天跑的程式會發現就算收斂了偶爾還是會有幾個效果很差的結果，那就是難免會有一些較差組的解被帶入，雖然機率可能比較低但還是無法避免的，所以各位不需要擔心TPE沒有好好的最佳化喔~<br />
+從下圖來看出現較差解的機率似乎是有變低了啦，所以TPE應該還是有效果的。<br />
+<img src="images/day-18/10.png" alt="https://ithelp.ithome.com.tw/upload/images/20240509/20151029QtCx41FZfq.png" /></p>
+<h2 id="結語"><a class="header" href="#結語">結語</a></h2>
+<p>TPE的大致流程與原理基本上就是這樣，當然還有一些更細節的概念，但這些概念會稍微偏離主軸，今天的部分參考了許多資料，我將這些資料都附在最後的參考資料區，有需要的人可以再去這些參考資料中看看。<br />
+不過希望各位在認識了TPE背後的原理之後，能夠對Optuna最佳化的方式能又更深的理解。明天會繼續使用Optuna來進行其他模型最佳化的應用，理解了一些背後的原理，相信各位應該能對自己所寫的程式有更全面的認識，在解釋程式的演算過程也會比較輕鬆，若要進行修改也會更容易從正確的方向進行修改~</p>
+<h2 id="參考資料"><a class="header" href="#參考資料">參考資料</a></h2>
+<p><a href="https://proceedings.neurips.cc/paper_files/paper/2011/file/86e8f7ab32cfd12577bc2619bc635690-Paper.pdf">原始論文</a><br />
+<a href="https://arxiv.org/pdf/2304.11127">參考的其他論文1</a><br />
+<a href="https://www.cs.ox.ac.uk/people/nando.defreitas/publications/BayesOptLoop.pdf">參考的其他論文2</a><br />
+<a href="https://towardsdatascience.com/a-conceptual-explanation-of-bayesian-model-based-hyperparameter-optimization-for-machine-learning-b8172278050f">參考資料1</a><br />
+<a href="https://www.jianshu.com/p/d73649b83722">參考資料2</a><br />
+<a href="https://zh.wikipedia.org/zh-tw/%E6%A0%B8%E5%AF%86%E5%BA%A6%E4%BC%B0%E8%AE%A1">參考資料3</a></p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="day-17.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="day-19.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="day-17.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="day-19.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
+
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    </body>
+</html>

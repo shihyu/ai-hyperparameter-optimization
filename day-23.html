@@ -1,0 +1,456 @@
+<!DOCTYPE HTML>
+<html lang="zh-TW" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Day 23 由淺入深！介紹更多MealPy的API (1/2) - 調整AI超參數好煩躁？來試試看最佳化演算法吧！</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">調整AI超參數好煩躁？來試試看最佳化演算法吧！</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="day-23由淺入深介紹更多mealpy的api-12"><a class="header" href="#day-23由淺入深介紹更多mealpy的api-12">[Day 23]由淺入深！介紹更多MealPy的API (1/2)</a></h1>
+<ul>
+<li>Day: 23</li>
+<li>Date: 2024-09-29 01:51:33</li>
+<li>Author: golucky_sir</li>
+<li>Source: https://ithelp.ithome.com.tw/articles/10360297</li>
+<li>Series: https://ithelp.ithome.com.tw/2020-12th-ironman/articles/7610</li>
+<li>Series Title: 調整AI超參數好煩躁？來試試看最佳化演算法吧！</li>
+</ul>
+<h2 id="前言"><a class="header" href="#前言">前言</a></h2>
+<p>昨天初步帶各位入門了MealPy，不知道各位體驗的如何？今天要繼續帶各位來學習MealPy的一些進階用法，這個部分預計會用兩天的時間來詳細介紹大部分常用的用法。</p>
+<h2 id="mealpy其他進階功能"><a class="header" href="#mealpy其他進階功能">MealPy其他進階功能</a></h2>
+<h3 id="定義多目標最佳化"><a class="header" href="#定義多目標最佳化">定義多目標最佳化</a></h3>
+<p>在MealPy使用多目標最佳化並不難，在目標函數中定義所有要回傳的部分然後在問題字典中再定義每個目標的權重即可，我使用範例的程式碼來進行講解。</p>
+<ol>
+<li>在目標函數中可以再定義更多副程式用於計算每個目標的適應值<code>booth(x, y)</code>、<code>bukin(x, y)</code>、<code>matyas(x, y)</code>。</li>
+<li>接著在問題字典<code>problem_multi</code>中需要定義一個key為<code>obj_weights</code>，這代表多目標中每個目標的加權比例，以本例子來說加權比例為<code>[0.4, 0.1, 0.5]</code>代表第一個目標<code>booth(x, y)</code>的結果要乘以0.4；第二個目標<code>bukin(x, y)</code>的結果要乘以0.1；第三個目標<code>matyas(x, y)</code>的結果要乘以0.5。</li>
+<li>目前我看了一下官方文檔的說明，目前尚無法個別定義每個目標的最佳化方向，例如準確率提高(<code>max</code>)、計算時間降低(<code>min</code>)，不過可以透過權重來將<strong>相反的目標乘上一個負數</strong>，這做法是目前現階段較可行的方式了。<br />
+例如在訓練分類模型時，問題字典中<code>"minmax": "max"</code>，準確率目標的權重就是1，但消耗時間的權重可以設定為-1，當使用的時間越多，那受加權計算後結果就會越低，最佳化時就會考慮讓時間減少以進一步提升最終的適應值。</li>
+</ol>
+<!-- -->
+<pre><code>import numpy as np
+from mealpy import PSO, FloatVar
+
+def objective_multi(solution):
+    # 定義三種目標函數進行多目標最佳化
+    def booth(x, y):
+        return (x + 2*y - 7)**2 + (2*x + y - 5)**2
+    def bukin(x, y):
+        return 100 * np.sqrt(np.abs(y - 0.01 * x**2)) + 0.01 * np.abs(x + 10)
+    def matyas(x, y):
+        return 0.26 * (x**2 + y**2) - 0.48 * x * y
+    return [booth(solution[0], solution[1]), bukin(solution[0], solution[1]), matyas(solution[0], solution[1])]
+
+problem_multi = {
+    "obj_func": objective_multi,
+    "bounds": FloatVar(lb=[-10, -10], ub=[10, 10]),
+    "minmax": "min",  # 查看相關教學與官方文檔，目前僅支持一種最佳化方向，無法
+    # 在問題字典中定義每個目標的權重，預設所有目標權重都為1
+    "obj_weights": [0.4, 0.1, 0.5]
+}
+
+model = PSO.OriginalPSO(epoch=1000, pop_size=50)
+model.solve(problem=problem_multi)
+</code></pre>
+<h3 id="視覺化求解過程"><a class="header" href="#視覺化求解過程">視覺化求解過程</a></h3>
+<p>MealPy同時支持視覺化最佳化過程的一些功能，我們使用<a href="https://doi.org/10.1016/j.future.2020.03.055">黏菌最佳化演算法(Slime Mould Algorithm, SMA)</a>來進行Griewank Function的最佳化，求解最佳化部分程式碼如下，SMA在面對此測試函數在不到50次迭代就能找到全局最佳解，相當厲害。</p>
+<pre><code>from mealpy import FloatVar, SMA
+import numpy as np
+from typing import Union
+
+def griewank_function(x: Union[np.ndarray, list]):
+    # 其他處理，將輸入x轉換為numpy陣列的形式
+    x = np.array(x)
+    # 定義目標函數的計算
+    i = np.arange(1, len(x)+1)
+    x1 = np.sum(x**2 / 4000)
+    x2 = -np.prod(np.cos(x/np.sqrt(i)))
+    return x1 + x2 + 1  # 定義回傳適應值
+
+problem_dict = {
+    "obj_func": griewank_function,
+    "bounds": FloatVar(lb=[-600, ] * 10, ub=[600, ] * 10),  # 用為10的List設定搜索空間
+    "minmax": "min",
+    }
+
+optimizer = SMA.OriginalSMA(epoch=30, pop_size=50, pr=0.03)
+optimizer.solve(problem_dict)
+</code></pre>
+<p>接著以此例子來解釋MealPy繪圖功能的API，具體功能有：</p>
+<ol>
+<li>
+<p><strong>繪製全局最佳解與局部最佳解</strong>：這個功能顧名思義，全局最佳解代表的是<strong>最佳化過程中的歷史最佳解</strong>；局部最佳解通常代表的是<strong>當前試驗中的群體最佳解</strong>。不過因應演算法不同所以好像有時全局最佳解取代掉局部最佳解，導致兩張圖表的內容會是相同的。<br />
+程式碼範例為，其中需要指定儲存的檔案路徑，若路徑為<code>"result/test"</code>的話就會在相同路徑下新增一個資料夾並將結果圖命名為test並同時儲存.pdf與.png檔案：</p>
+<pre><code># 繪製全局最佳解收斂過程
+optimizer.history.save_global_best_fitness_chart(filename="儲存檔案路徑")
+# 繪製局部最佳解收斂過程
+optimizer.history.save_local_best_fitness_chart(filename="儲存檔案路徑")
+</code></pre>
+<p>程式執行後可以看到指定路徑下有儲存為圖片與PDF檔案，下圖為全局最佳收斂圖，可以看到SMA在面對這兩個測試函數的搜索最佳解能力非常好，都有精確搜索到最佳的代入解，最後適應值也成功收斂到0：<br />
+<img src="images/day-23/01.png" alt="https://ithelp.ithome.com.tw/upload/images/20240512/20151029xsIQbySVUj.png" /><br />
+以及局部最佳收斂圖如下：<br />
+<img src="images/day-23/02.png" alt="https://ithelp.ithome.com.tw/upload/images/20240512/20151029Xqtn2horRq.png" /></p>
+</li>
+<li>
+<p><strong>繪製所有目標的全局最佳值與局部最佳值</strong>：與上個功能不同，這個功能是在多目標最佳化時用到的，他會繪製所有目標函數的收斂過程，其餘基本上與上個功能差不多。<br />
+因為這個例子是使用一個目標的最佳化，所以這邊我將目標變成求解Griewank Function與Rastrigin Function相加後的適應值，所以目標修改後的程式碼如下：</p>
+<pre><code>from mealpy import FloatVar, SMA
+import numpy as np
+from typing import Union
+def objective_multi(solution):
+    def griewank_function(x: Union[np.ndarray, list]):
+        # 其他處理，將輸入x轉換為numpy陣列的形式
+        x = np.array(x)
+        # 定義目標函數的計算
+        i = np.arange(1, len(x)+1)
+        x1 = np.sum(x**2 / 4000)
+        x2 = -np.prod(np.cos(x/np.sqrt(i)))
+        return x1 + x2 + 1  # 定義回傳適應值
+
+    def rastrigin_function(x: Union[np.ndarray, list]):
+        x = np.array(x)
+        return 10*len(x) + np.sum(x**2 - 10*np.cos(2*np.pi*x))
+
+    return [griewank_function(solution), rastrigin_function(solution)]
+
+problem_dict = {
+    "obj_func": objective_multi,
+    "bounds": FloatVar(lb=[-600, ] * 10, ub=[600, ] * 10),  # 用為10的List設定搜索空間
+    "minmax": "min",
+    "obj_weights": [1, 1]  # 多目標問題需要設定權重
+    }
+
+optimizer = SMA.OriginalSMA(epoch=30, pop_size=50, pr=0.03)
+optimizer.solve(problem_dict)
+</code></pre>
+<p>接著繪製多目標的全局最佳收斂圖與局部最佳收斂圖程式如下：</p>
+<pre><code># 繪製多目標全局最佳解收斂過程
+optimizer.history.save_global_objectives_chart(filename="儲存檔案路徑")
+# 繪製多目標局部最佳解收斂過程
+optimizer.history.save_local_objectives_chart(filename="儲存檔案路徑")
+</code></pre>
+<p>多目標全局最佳解收斂過程的結果圖如下圖：<br />
+<img src="images/day-23/03.png" alt="https://ithelp.ithome.com.tw/upload/images/20240512/20151029NPHzNFBfAp.png" /><br />
+另外，多目標局部最佳解收斂過程的結果圖如下圖：<br />
+<img src="images/day-23/04.png" alt="https://ithelp.ithome.com.tw/upload/images/20240512/20151029xMDXW2M5VE.png" /></p>
+</li>
+<li>
+<p><strong>繪製試驗時間圖</strong>：這個功能可以繪製每次試驗時所花費的時間，在後續分析中也能有不錯的用途。</p>
+<pre><code># 繪製試驗時間圖
+optimizer.history.save_runtime_chart(filename="儲存檔案路徑")
+</code></pre>
+<p>繪製結果如下，每次試驗時間都非常短，不過在之後用於深度學習模型訓練時就會體現出不同超參數設定造成的不同訓練時長了。<br />
+<img src="images/day-23/05.png" alt="https://ithelp.ithome.com.tw/upload/images/20240512/20151029as9IPIa2Ft.png" /></p>
+</li>
+<li>
+<p><strong>繪製Exploration與Exploitation百分比圖</strong>：這個概念在最佳化演算法代表的是演算法搜索最佳解的一些行為，Exploration針對的是<strong>全局搜索</strong>，得到的解空間範圍越大越好；而Exploitation代表在較佳的<strong>局部範圍</strong>內進行更精細的搜索。<br />
+所以整個概念可以解釋成 <strong>往其他新的區域探索能得到更好的解(Exploration)</strong> 與 <strong>用現有的一些結果再更精細的去搜索最佳解(Exploitation)</strong> 之間的比例，通常到了迭代後期都會傾向於從現有的解再去搜索更精確的最佳解。<br />
+要繪製這個圖的程式碼如下：</p>
+<pre><code># 繪製Exploration與Exploitation百分比圖
+optimizer.history.save_exploration_exploitation_chart(filename="儲存檔案路徑")
+</code></pre>
+<p>結果圖會長這樣：<br />
+<img src="images/day-23/06.png" alt="https://ithelp.ithome.com.tw/upload/images/20240512/20151029BSbe7u37B4.png" /></p>
+</li>
+<li>
+<p><strong>繪製群體多樣性圖</strong>：在最佳化演算法開發分析時常常會使用這個圖來分析最佳化過程中解的多樣性。<br />
+若多樣性低通常代表該演算法有比較好的開發能力，比較容易收斂到最佳解附近；如果多樣性起伏不定的話且多樣性較高的話代表搜索解是落在較廣範圍的，演算法可能會有比較好的全局搜索能力。<br />
+這個圖適用於<strong>分析最佳化演算法的性能以及特性的</strong>，與之後的深度學習模型最佳化比較沒有關係，程式碼如下：</p>
+<pre><code># 繪製群體多樣性圖
+optimizer.history.save_diversity_chart(filename="儲存檔案路徑")
+</code></pre>
+<p>結果圖如下，可以看到SMA這演算法搜索能力還是比較不錯的。<br />
+<img src="images/day-23/07.png" alt="https://ithelp.ithome.com.tw/upload/images/20240512/20151029ln3GX8IWGT.png" /></p>
+</li>
+</ol>
+<p>以上就是目前MealPy支援的輸出圖片類型了，最後還有一個軌跡圖，我還不太了解如何使用，<a href="https://mealpy.readthedocs.io/en/latest/pages/general/visualization.html">文檔教學</a>也沒有說得特別清楚，有知道如何使用的也歡迎在底下留言告訴我喔，謝謝！</p>
+<h2 id="結語"><a class="header" href="#結語">結語</a></h2>
+<p>今天向各位介紹了MealPy的其他API以及進階應用，雖然目前模組的功能性沒有到很完善，不過都還是可以轉個彎達成目的，希望在未來模組持續更新後能為我們帶來更完整的功能。<br />
+明天會繼續介紹MealPy的其他功能還有實用技巧，接下來就要來進入實作的部分了。</p>
+<h2 id="附錄完整程式最佳化試驗視覺化"><a class="header" href="#附錄完整程式最佳化試驗視覺化">附錄：完整程式(最佳化試驗視覺化)</a></h2>
+<pre><code>from mealpy import FloatVar, SMA
+import numpy as np
+from typing import Union
+
+def griewank_function(x: Union[np.ndarray, list]):
+    # 其他處理，將輸入x轉換為numpy陣列的形式
+    x = np.array(x)
+    # 定義目標函數的計算
+    i = np.arange(1, len(x) + 1)
+    x1 = np.sum(x ** 2 / 4000)
+    x2 = -np.prod(np.cos(x / np.sqrt(i)))
+    return x1 + x2 + 1  # 定義回傳適應值
+
+def objective_multi(solution):
+    def griewank_function(x: Union[np.ndarray, list]):
+        x = np.array(x)
+        i = np.arange(1, len(x)+1)
+        x1 = np.sum(x**2 / 4000)
+        x2 = -np.prod(np.cos(x/np.sqrt(i)))
+        return x1 + x2 + 1
+
+    def rastrigin_function(x: Union[np.ndarray, list]):
+        x = np.array(x)
+        return 10*len(x) + np.sum(x**2 - 10*np.cos(2*np.pi*x))
+
+    return [griewank_function(solution), rastrigin_function(solution)]
+# 單一目標最佳化的問題字典
+problem_dict_gf = {
+    "obj_func": griewank_function,
+    "bounds": FloatVar(lb=[-600, ] * 10, ub=[600, ] * 10),  # 用為10的List設定搜索空間
+    "minmax": "min",
+    }
+
+# 多目標最佳化的問題字典
+problem_dict = {
+    "obj_func": objective_multi,
+    "bounds": FloatVar(lb=[-600, ] * 10, ub=[600, ] * 10),  # 用為10的List設定搜索空間
+    "minmax": "min",
+    "obj_weights": [1, 1]  # 多目標問題需要設定權重
+    }
+
+optimizer = SMA.OriginalSMA(epoch=30, pop_size=50, pr=0.03)
+# optimizer.solve(problem_dict_gf)  # 單一目標最佳化求解
+optimizer.solve(problem_dict)  # 多目標最佳化求解
+
+# 輸出最佳解與最佳適應值
+print('The best solution', optimizer.g_best.solution)
+print('The best fitness value', optimizer.g_best.target.fitness)
+
+# 繪製最佳化實驗結果圖
+# 繪製多目標全局最佳解收斂過程
+optimizer.history.save_global_objectives_chart(filename="result/goc")
+# 繪製多目標局部最佳解收斂過程
+optimizer.history.save_local_objectives_chart(filename="result/loc")
+# 繪製全局最佳解收斂過程
+optimizer.history.save_global_best_fitness_chart(filename="result/gbfc")
+# 繪製局部最佳解收斂過程
+optimizer.history.save_local_best_fitness_chart(filename="result/lbfc")
+# 繪製試驗時間圖
+optimizer.history.save_runtime_chart(filename="result/rtc")
+# 繪製Exploration與Exploitation百分比圖
+optimizer.history.save_exploration_exploitation_chart(filename="result/eec")
+# 繪製群體多樣性圖
+optimizer.history.save_diversity_chart(filename="result/dc")
+</code></pre>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="day-22.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="day-24.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="day-22.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="day-24.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
+
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    </body>
+</html>

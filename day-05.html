@@ -1,0 +1,337 @@
+<!DOCTYPE HTML>
+<html lang="zh-TW" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Day 05 如何知道最佳化演算法的優劣？測試函數介紹 - 調整AI超參數好煩躁？來試試看最佳化演算法吧！</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">調整AI超參數好煩躁？來試試看最佳化演算法吧！</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="day-5如何知道最佳化演算法的優劣測試函數介紹"><a class="header" href="#day-5如何知道最佳化演算法的優劣測試函數介紹">[Day 5]如何知道最佳化演算法的優劣？測試函數介紹</a></h1>
+<ul>
+<li>Day: 5</li>
+<li>Date: 2024-09-11 00:13:28</li>
+<li>Author: golucky_sir</li>
+<li>Source: https://ithelp.ithome.com.tw/articles/10349247</li>
+<li>Series: https://ithelp.ithome.com.tw/2020-12th-ironman/articles/7610</li>
+<li>Series Title: 調整AI超參數好煩躁？來試試看最佳化演算法吧！</li>
+</ul>
+<h2 id="前言"><a class="header" href="#前言">前言</a></h2>
+<p>今天要來介紹測試函數(testing function)，這類型的測試函數顧名思義基本上是用來測試優化算法的能力的。今天會來向各位介紹測試函數的一些基本知識，各位可以使用這些測試函數搭配之後介紹的最佳化演算法來體驗看看最佳化過程是如何的。</p>
+<h2 id="全局最佳解與局部最佳解"><a class="header" href="#全局最佳解與局部最佳解">全局最佳解與局部最佳解</a></h2>
+<p>首先，在最佳化過程中有時候會遇到全局最佳解，有時候會遇到局部最佳解。而有些演算法找到局部最佳解時就會陷入其中導致找不到全局最佳的解，於是比較先進的最佳化演算法通常也都會著重於探索全局最佳的位置。</p>
+<p>下圖是全局最佳解與局部最佳解的示意圖(以最小化為目標)，在局部最佳解那個位置可以看到值是明顯小於左右兩側的，有些演算法在找到局部最佳解就會「自滿」而收斂。但綜觀全局來說還是有明顯更低的點存在，但要從局部最佳點找到全局最佳點勢必要經過一個陡峭的上坡探索，有許多演算法就是致力於提升探索的能力，而根據他們的研究成果這些做法都能夠進一步找出更優秀的結果。</p>
+<p><img src="images/day-05/01.png" alt="https://ithelp.ithome.com.tw/upload/images/20240502/20151029NJrrRuIqFE.png" /></p>
+<p>不過實際運用問題一定會更複雜，之後的AI模型甚至很難列出解空間與適應值之間的關係(舉例來說就是學習率+模型參數量與預測誤差或準確率之間的關係)，所以演算法的能力就更重要了！要確保啟發式演算法的能力通常會使用測試函數做非常多的測試保證它們的性能。</p>
+<h2 id="測試函數"><a class="header" href="#測試函數">測試函數</a></h2>
+<p>接下來要來討論測試函數了，目前有許多經典的測試函數可以很好的評估演算法的能力，目前提出的測試函數非常多，數以千計的測試函數也是介紹不完，所以我會介紹一些常見的，並附上<a href="https://www.sfu.ca/~ssurjano/optimization.html">參考資料</a>讓各位可以再進一步的去認識這些函數！<br />
+其實這些函數非常多種，而且可能同樣函數在不同地方會有些微差別或者會有變種函數存在，在使用時要特別注意這些方程式的細節喔。</p>
+<blockquote>
+<p>若各位有興趣可以去看看<a href="https://arxiv.org/pdf/2201.00523">CEC2022</a>，CEC是IEEE的國際進化計算會議(Congress on Evolutionary Computation)，每年都會有舉辦比賽並提供各種測試函數給參賽者想辦法求最佳解。不過本系列並不是著重於演算法的開發所以就不過多介紹了，有興趣可以去看看每年IEEE CEC出了甚麼難題喔。</p>
+</blockquote>
+<p><img src="images/day-05/02.png" alt="https://ithelp.ithome.com.tw/upload/images/20240504/201510290QMaFquNJ9.png" /><br />
+圖. CEC 2005的23種不同的測試函數，<a href="https://doi-org.ezproxy.nptu.edu.tw:8443/10.1109/4235.771163">資料來源</a></p>
+<ol>
+<li>
+<p>Sphere Function：這是一個很單純的方程式，公式也出乎意料的簡單<img src="images/day-05/03.png" alt="" />這個方程式中的x就是解的組合、<strong>d是解空間中的未知數數量(重要，後面都會看到)</strong>，如果d=2那就代表演算法會找出兩個解x1跟x2並輸入至方程式中計算他們平方的總和。原則上最佳解就是解空間中所有x都等於0，這樣可以求得最小值x。若函數輸入2個未知數的話函數圖如下圖。</p>
+<p>(高維度空間基本上畫不出來，所以都以2維輸入為範例)</p>
+<blockquote>
+<p>Sphere Function輸入未知數數量不限；解空間元素值建議範圍為-5.12~5.12；最佳解為解空間元素皆為0；此時最佳適應值為0。</p>
+</blockquote>
+<p><img src="images/day-05/04.png" alt="" /></p>
+</li>
+<li>
+<p>Ackley Function：這個方程式就起伏不定了，包含很多局部最佳值和一個全局最佳值。公式為<img src="images/day-05/05.png" alt="" />。一樣二維輸入的函數圖如下圖。其中一些參數a=20，b=0.2，c=2π。</p>
+<p><img src="images/day-05/06.png" alt="" /></p>
+<blockquote>
+<p>Ackley Function輸入的未知數數量不限；解空間元素值建議範圍為-32768~32768；最佳解為解空間元素皆為0；此時最佳適應值為0。</p>
+</blockquote>
+</li>
+<li>
+<p>Levy Function：這個函數更讓人看不懂了，看起來有點像波浪。他的公式長這樣，有點複雜。<img src="images/day-05/07.png" alt="https://ithelp.ithome.com.tw/upload/images/20240502/20151029Xe4oK3tDE9.png" /><br />
+不過之後幾天我也會帶各位根據這些公式把方程式化為程式，所以請不用擔心！</p>
+<blockquote>
+<p>Levy Function輸入的未知數數量不限；解空間元素值建議範圍為-10~10；最佳解為解空間元素皆為1；此時最佳適應值為0。</p>
+</blockquote>
+</li>
+<li>
+<p>Cross-in-tray Function：這個方程式只接受二維輸入，他看起來是有很多最大值，而且峰值之間都存在局部最小值，有一個全局最小值。公式為<img src="images/day-05/08.png" alt="https://ithelp.ithome.com.tw/upload/images/20240502/201510292ebSyBjOY0.png" /><br />
+他的函數圖長這個樣子，左邊是很多峰值的樣子(解空間範圍較廣)，右邊是將部分放大以更好的觀測一個峰值的樣子(解空間範圍較窄)：<br />
+<img src="images/day-05/09.png" alt="https://ithelp.ithome.com.tw/upload/images/20240502/20151029u0SH7ckPb6.png" /></p>
+<blockquote>
+<p>Cross-in-tray Function輸入的未知數數量限制2個；解空間元素值建議範圍為-10~10；最佳解為解空間元素有四種組合為(±1.3491,±1.3491)；此時最佳適應值為-2.06261。雖然數字很難看但這樣也可以更精確地確認演算法的能力。</p>
+</blockquote>
+</li>
+<li>
+<p>Bukin Function：這個方程式的外觀長得很酷，像高科技科幻片會出現的飛機一樣XD，這個方程式也是有許多局部最小值的方程式。公式為<img src="images/day-05/10.png" alt="https://ithelp.ithome.com.tw/upload/images/20240502/20151029xHze3ChqRV.png" /><br />
+那他的方程式圖片長這樣(真的很酷)：<br />
+<img src="images/day-05/11.png" alt="https://ithelp.ithome.com.tw/upload/images/20240502/20151029hnBBpqRut2.png" /></p>
+<blockquote>
+<p>Bukin Function輸入的未知數數量限制2個；解空間元素值建議範圍x1為-15~-5、x2為-3~3；最佳解為解空間元素為(-10,1)；此時最佳適應值為0。</p>
+</blockquote>
+</li>
+<li>
+<p>Rastrigin Function：這方程式感覺有點像鐘乳石洞反過來的樣子，同樣有許多局部最小值，公式為<img src="images/day-05/12.png" alt="https://ithelp.ithome.com.tw/upload/images/20240502/20151029HOsrjkkcv8.png" /><br />
+他的方程式圖形長這樣<br />
+<img src="images/day-05/13.png" alt="https://ithelp.ithome.com.tw/upload/images/20240502/20151029JBhvW2JWSd.png" /><br />
+真的很像鐘乳石洞吧(圖片貼上來後才覺得好像一點都不像TT)。<br />
+<img src="images/day-05/14.jpg" alt="https://ithelp.ithome.com.tw/upload/images/20240502/20151029MBa5zfPjg5.jpg" /><br />
+[<a href="https://www.google.com/url?sa=i&amp;url=https%3A%2F%2Fblog.shockbyte.com%2Fminecraft-caves-and-cliffs-part-2%2F&amp;psig=AOvVaw3w_Tj_rOyt_K5qRGKX_F14&amp;ust=1714721118890000&amp;source=images&amp;cd=vfe&amp;opi=89978449&amp;ved=0CBIQjRxqFwoTCLC8no-47oUDFQAAAAAdAAAAABAI">圖片來源</a>]</p>
+<blockquote>
+<p>Rastrigin Function輸入的未知數數量不限；解空間元素值建議範圍為-5.12~5.12；最佳解為解空間元素皆為0；此時最佳適應值為0。</p>
+</blockquote>
+</li>
+<li>
+<p>Bohachevsky Function：這個方程式跟Sphere看起來長得很像，不過它只能接受兩個未知數的輸入，同時他一共有三種型式，雖然函數圖形可能會有一點差異不過不大！方程式如下。<br />
+<img src="images/day-05/15.png" alt="https://ithelp.ithome.com.tw/upload/images/20240502/20151029HGs2OAhFjb.png" /><br />
+在實務上基本上應該可以任選一個使用，這個方程式的圖形如下。<br />
+<img src="images/day-05/16.png" alt="https://ithelp.ithome.com.tw/upload/images/20240502/20151029q27DFFWowG.png" /><br />
+這個就是很漂亮的圖形了！就是一個穩定下滑的圖形，像碗一樣。</p>
+<blockquote>
+<p>Rastrigin Function輸入的未知數數量限制2個；解空間元素值建議範圍為-100~100；最佳解為解空間元素皆為0；此時最佳適應值為0(三個方程式都相同)。</p>
+</blockquote>
+</li>
+<li>
+<p>Griewank Function：這也是我在論文中也很常看到的方程式，方程式圖乍看之下很像一個碗狀，但放大看了之後才發現他是很多局部最大最小值合成的。是非常凹凸不平的方程式，並不是表面上看起來那樣光滑。它的公式為<img src="images/day-05/17.png" alt="https://ithelp.ithome.com.tw/upload/images/20240502/20151029Dy6xJMRBMI.png" /> 看起來並不複雜，不過有一個連加符號跟連乘符號，在寫程式上需要注意一下。這個方程式的圖長這樣：<br />
+<img src="images/day-05/18.png" alt="https://ithelp.ithome.com.tw/upload/images/20240502/20151029RGSOoMQym9.png" /> 可以看到它乍看之下像碗狀，但放大之後那個凹凸不平的樣子！</p>
+<blockquote>
+<p>Griewank Function輸入的未知數數量不限；解空間元素值建議範圍為-600~600；最佳解為解空間元素皆為0；此時最佳適應值為0。</p>
+</blockquote>
+</li>
+<li>
+<p>Schaffer Function N.2：怎麼說呢...這方程式長得確實有個性。極度不平滑的外表，乍看之下是非常複雜的方程式，但其實也還好，它的公式只是長這樣而已<img src="images/day-05/19.png" alt="https://ithelp.ithome.com.tw/upload/images/20240502/20151029gWc0wML5OB.png" /> 看起來很簡單吧！<br />
+而它的圖片卻長得很...特殊？各位可以看看，我實在想不出甚麼好的形容詞可以形容它。一樣左邊為範圍較大看起來的樣子，右邊是只畫出將原點附近的範圍將方程式放大後的樣子。<br />
+<img src="images/day-05/20.png" alt="https://ithelp.ithome.com.tw/upload/images/20240502/20151029d23nUvp31N.png" /></p>
+<blockquote>
+<p>Schaffer Function N.2輸入的未知數數量限制2個；解空間元素值建議範圍為-100~100；最佳解為解空間元素皆為0；此時最佳適應值為0。</p>
+</blockquote>
+</li>
+</ol>
+<p>以上是我今天想向各位介紹的幾種測試函數，接下來幾天我會帶各位實作這些函數，視情況我會再增加更多其他五花八門的函數進去！不過有很多函數我並未能找到容易理解的函數圖形orz。所以就之後就再視情況追加其他內容囉。</p>
+<blockquote>
+<p>雖然上述都有說到解空間建議的範圍，不過其實沒有硬性規定，那個規定是因為有一個會議為<a href="https://en.wikipedia.org/wiki/IEEE_Congress_on_Evolutionary_Computation">IEEE CEC</a>，它們會舉辦賽事來比最佳化演算法的優劣，為了統一條件才會限制其範圍，各位也可以根據自己的需要設定解空間的輸入範圍。<br />
+另外今天所提供的公式方程式與函數圖形都來源於[<a href="https://www.sfu.ca/~ssurjano/optimization.html">這裡</a>]</p>
+</blockquote>
+<h2 id="結語"><a class="header" href="#結語">結語</a></h2>
+<p>今天介紹了9個測試函數，之後三天會來將這些測試函數寫成python code (偷水三天來寫學校的作業TT)並讓各位看看這些測試函數寫成程式後的一些注意事項以及建議。花了幾天終於要進入最期待的程式部份了！希望這幾天的介紹不會因為文字太多導致大家都懶得看了XD</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="day-04.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="day-06.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="day-04.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="day-06.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
+
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    </body>
+</html>

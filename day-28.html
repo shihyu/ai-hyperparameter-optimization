@@ -1,0 +1,284 @@
+<!DOCTYPE HTML>
+<html lang="zh-TW" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Day 28 MealPy的更多應用，最佳化生成對抗網路(GAN)(2/2) - 調整AI超參數好煩躁？來試試看最佳化演算法吧！</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">調整AI超參數好煩躁？來試試看最佳化演算法吧！</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="day-28mealpy的更多應用最佳化生成對抗網路gan22"><a class="header" href="#day-28mealpy的更多應用最佳化生成對抗網路gan22">[Day 28]MealPy的更多應用，最佳化生成對抗網路(GAN)(2/2)</a></h1>
+<ul>
+<li>Day: 28</li>
+<li>Date: 2024-10-04 00:02:07</li>
+<li>Author: golucky_sir</li>
+<li>Source: https://ithelp.ithome.com.tw/articles/10363068</li>
+<li>Series: https://ithelp.ithome.com.tw/2020-12th-ironman/articles/7610</li>
+<li>Series Title: 調整AI超參數好煩躁？來試試看最佳化演算法吧！</li>
+</ul>
+<h2 id="前言"><a class="header" href="#前言">前言</a></h2>
+<p>昨天帶各位使用MaelPy來針對DCGAN進行超參數的最佳化並執行了程式，今天就來看看結果吧！</p>
+<h2 id="dcgan最佳化結果"><a class="header" href="#dcgan最佳化結果">DCGAN最佳化結果</a></h2>
+<p>昨天的程式執行結果如下表所示：</p>
+<div class="table-wrapper"><table><thead><tr><th>超參數名稱</th><th>最佳超參數值</th></tr></thead><tbody>
+<tr><td>生成器學習率</td><td>2.95685686e-04</td></tr>
+<tr><td>判別器學習率</td><td>3.80815357e-04</td></tr>
+<tr><td>生成器第一層卷積層的神經元數量</td><td>32</td></tr>
+<tr><td>判別器第一層卷積層的神經元數量</td><td>64</td></tr>
+<tr><td>生成器卷積核大小</td><td>3</td></tr>
+<tr><td>判別器卷積核大小</td><td>4</td></tr>
+<tr><td>判別器LaekyReLU斜率</td><td>0.25</td></tr>
+<tr><td><strong>最佳適應值</strong></td><td>8.435876443982124</td></tr>
+</tbody></table>
+</div>
+<p>另外以下是最佳化的收斂曲線：<br />
+<img src="images/day-28/01.png" alt="https://ithelp.ithome.com.tw/upload/images/20240516/20151029qmgnxtiIaP.png" /></p>
+<p>結果看起來和之前一樣還是差不多，其實並不優秀，不過大概有幾個原因，這部分就跟<a href="https://ithelp.ithome.com.tw/articles/10359181">第21天文章</a>介紹的相同，因為雖然更換了使用的模組與演算法，不過訓練結果的問題通常不會差太多，但使用啟發式演算法也有可能會有演算法參數設定的問題：</p>
+<ul>
+<li><strong>啟發式演算法參數設定問題</strong>：啟發式演算法通常也會需要進行初始化，並設定相關的超參數，不過為了再調整最佳化演算法的超參數再套最佳化的話就會變得像無限的俄羅斯娃娃一樣了，我覺得並非好主意。<br />
+另外有些研究會去尋找最佳的啟發式演算法超參數，但通常都是在 <strong>問題簡單，可以快速求解</strong> 的時候才比較有機會可以使用，像類神經網路的最佳化這種執行時間動不動就要一段時間的應用，其實再針對最佳化演算法的超參數再最佳化已經沒什麼意義了。</li>
+<li><strong>迭代次數不夠多</strong>：因為節省時間所以試驗迭代次數只設定10次而已，以及群數量只有5而已，原則上試驗次數再設定更多次或許會比較好。</li>
+<li><strong>訓練次數不足</strong>：本例在迭代時每次訓練只設定訓練5000次，原則上設定次數大概要15000次以上效果才會比較好，但是如果真的照這樣訓練的話，光程式連續執行就好幾天就過去了，電費哭哭。<br />
+之前找了一天用實驗室的電腦測試使用Optuna每次迭代時DCGAN訓練20000次，大概跑了170小時，在寫這段文字的前幾小時，Optuna才執行完程式。<br />
+所以為了節省時間本例暫時捨棄了追求最佳效果，若有需要的話可以設定完整一點再執行程式，通常跑個幾天都是正常的，所以在 <strong>事前規劃才需要做的完善</strong> ，以免浪費了幾天的寶貴時間。</li>
+<li><strong>指標使用的不好</strong>：因為MNIST手寫資料集長寬只有28且是灰階的，所以輸入到FID等指標中使用的神經網路會導致出錯誤，所以才使用PSNR與SSIM。<br />
+但DCGAN生成結果是隨機的，所以就算生成圖片長得很像真實數字，與資料集中的結果相比還是容易產生較低的分數。例如生成可以辨識的「0」與資料集中的「7」相比還是會有比較低的PSNR值。</li>
+<li><strong>GAN訓練不穩定</strong>：雖然只訓練8000次，但姑且還是有跑出最佳解，各位可以使用看看上述最佳解代入並進行完整的訓練看看程式執行的效果如何。<br />
+<strong>不過因為GAN的訓練不穩定，所以就算先以較少次數執行完最佳化並找出最佳訓練參數後，再帶入最佳解也可能因為後期訓練梯度消失或者梯度爆炸導致訓練失敗，所以在這部分需要注意一下！</strong></li>
+</ul>
+<blockquote>
+<p>在實務應用上，需要注意若不確定最佳化程式是否有問題可以先使用較低迭代次數，與較低訓練次數，先以時間消耗少的方式完整跑過程式，沒問題之後再使用完整的設定來執行程式。</p>
+</blockquote>
+<h2 id="其他可以應用最佳化的模組"><a class="header" href="#其他可以應用最佳化的模組">其他可以應用最佳化的模組</a></h2>
+<p>在<a href="http://">第9天</a>我有介紹一些其他可以使用最佳化的模組，不過當時我漏掉了兩個，分別為以下的函式庫。這兩個都是機器學習與深度學習的大咖模組中提供的最佳化方式，在不了解其他演算法的情況下，只想趕快交差也可以使用看看這兩個函式庫來簡單的針對自己的模型進行最佳化。</p>
+<ul>
+<li><strong>scikit-learn</strong>：sklearn提供了兩種方式來進行超參數的最佳化，分別為<strong>GridSearchCV</strong>與<strong>RandomizedSearchCV</strong>。前者是窮舉搜索，會考慮所有參數組合；後者為隨機從搜索空間中抽樣解並代入問題。<br />
+不過這兩種算法印象中並沒有最佳化的機制，單純只是窮舉跟隨積搜索而已。若各位對此有興趣可以來看看官方文檔對於<a href="https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.GridSearchCV.html#sklearn.model_selection.GridSearchCV">GridSearchCV</a>和<a href="https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.RandomizedSearchCV.html#sklearn.model_selection.RandomizedSearchCV">RandomizedSearchCV</a>。</li>
+<li><strong>Keras Tuner</strong>：這是專用於Keras模型的超參數調整套件，這個套件也可以幫助各位自動找到最佳的參數組合，此套件有提供許多不同的最佳化方式，各位若有興趣也可以試試看，<a href="https://keras.io/keras_tuner/">官方教學在此</a>。</li>
+<li><strong>MealPy Tuner</strong>：這是MealPy中提供的一個簡單的超參數調整工具，不過他並不能調整深度學習模型的超參數，目前只能調整MealPy中包含的啟發式演算法的超參數而已，若要針對這些演算法的參數進行調整的話，可以考慮使用看看MealPy內建的調整套件，<a href="https://mealpy.readthedocs.io/en/latest/pages/general/tuner.html">官方教學在此</a>。</li>
+</ul>
+<p>目前也有許多人會使用<a href="https://pytorch.org/">Pytorch</a>，不過我印象中Pytorch並沒有內建超參數最佳化的工具，若有需要使用的話可以參考我這系列前面的文章，使用<strong>Optuna</strong>或者<strong>MealPy</strong>來進行參數的最佳化。</p>
+<h2 id="結語"><a class="header" href="#結語">結語</a></h2>
+<p>這次使用MealPy進行DCGAN的最佳化，啟發式演算法的差異就是除了迭代次數以外每次迭代都還需要完整跑完群體中所有成員的解，所以會造成程式執行的更久。不過通常這樣更廣泛的搜索最佳解時也會比較著重於尋找偏向全局最佳的地方，無論使用哪個模組，哪個演算法，基本上都還是有優缺點，所以就需要斟酌看看啦。</p>
+<p>這次鐵人賽的程式介紹就到這邊為止，雖然還有許多可以提及的東西，不過30天一轉眼就即將結束了，最後兩天我會簡單的介紹最佳化演算法在AI模型的一些其他應用以及這次比賽的心得。接下來也要趕快去拯救我的課業了哈哈，希望未來還有時間跟機會可以整理我所學的程式技巧並向各位分享。</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="day-27.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="day-29.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="day-27.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="day-29.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
+
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    </body>
+</html>

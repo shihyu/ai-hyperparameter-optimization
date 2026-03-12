@@ -1,0 +1,324 @@
+<!DOCTYPE HTML>
+<html lang="zh-TW" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Day 08 根據方程式來寫出測試函數的程式吧！(3/3) - 調整AI超參數好煩躁？來試試看最佳化演算法吧！</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">調整AI超參數好煩躁？來試試看最佳化演算法吧！</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="day-8根據方程式來寫出測試函數的程式吧33"><a class="header" href="#day-8根據方程式來寫出測試函數的程式吧33">[Day 8]根據方程式來寫出測試函數的程式吧！(3/3)</a></h1>
+<ul>
+<li>Day: 8</li>
+<li>Date: 2024-09-14 00:45:04</li>
+<li>Author: golucky_sir</li>
+<li>Source: https://ithelp.ithome.com.tw/articles/10350219</li>
+<li>Series: https://ithelp.ithome.com.tw/2020-12th-ironman/articles/7610</li>
+<li>Series Title: 調整AI超參數好煩躁？來試試看最佳化演算法吧！</li>
+</ul>
+<h2 id="前言"><a class="header" href="#前言">前言</a></h2>
+<p>今天是介紹測試函數的最後一天，雖然花了三天介紹9個測試函數但我覺得還是遠遠不夠，有趣的測試函數實在太多了。在此先許願若這次有順利完賽且之後幾天還有空閒時間的話，我會再來繼續分享測試函數的一些程式化。方程式轉程式有點寫上癮了，從中獲得了很多成就感哈哈(怪人)。</p>
+<h2 id="bohachevsky-function"><a class="header" href="#bohachevsky-function"><a href="https://www.sfu.ca/~ssurjano/boha.html">Bohachevsky Function</a></a></h2>
+<p>這個方程式有三種型態(聽起來很像遊戲的最終Boss例如惡靈古堡3的追跡者之類的XD)，總之，它的公式其實也相當的簡單：<br />
+<img src="images/day-08/01.png" alt="https://ithelp.ithome.com.tw/upload/images/20240502/20151029HGs2OAhFjb.png" /><br />
+接著就來撰寫程式吧，我們將三條方程式分開來看看。</p>
+<ol>
+<li>f1(x)：這個就是很多項目加加減減而已，只需要一項一項建立並把它加減之後就會得到結果了XD，具體程式就像這樣<code>x[0]**2 + 2*x[1]**2 - 0.3*np.cos(3*np.pi*x[0]) - 0.4*np.cos(4*np.pi*x[1]) + 0.7</code>。沒什麼難度。</li>
+<li>f2(x)：同上，一樣加加減減而已，直接上程式碼：<code>x[0]**2 + 2*x[1]**2 - 0.3*np.cos(3*np.pi*x[0])*np.cos(4*np.pi*x[1]) + 0.3</code>，中間有一段兩個變數經過cos函數計算那裡要注意是相乘。</li>
+<li>f3(x)：一樣難度兩顆星，注意cos函數裡面的計算，也是一樣直接上程式<code>x[0]**2 + 2*x[1]**2 - 0.3*np.cos(3*np.pi*x[0] + 4*np.pi*x[1]) + 0.3</code>。<br />
+最後我們把三種型態都寫出來了，接著只要在定義副程式時加上條件控制的參數<code>function_type</code>就好了，要注意這個參數只能為1、2、3其中之一，分別代表f1(x)、f2(x)、f3(x)。其完整程式碼如下：</li>
+</ol>
+<!-- -->
+<pre><code>import numpy as np
+from typing import Union
+
+def bohachevsky_function(x: Union[np.ndarray, list],
+                         function_type: int = 1):
+    
+    assert len(x) == 2, 'x的長度必須為2!'
+    if function_type==1:
+        return x[0]**2 + 2*x[1]**2 - 0.3*np.cos(3*np.pi*x[0]) - 0.4*np.cos(4*np.pi*x[1]) + 0.7
+    elif function_type == 2:
+        return x[0]**2 + 2*x[1]**2 - 0.3*np.cos(3*np.pi*x[0])*np.cos(4*np.pi*x[1]) + 0.3
+    elif function_type == 3:
+        return x[0]**2 + 2*x[1]**2 - 0.3*np.cos(3*np.pi*x[0] + 4*np.pi*x[1]) + 0.3
+    else:
+        # 若選擇錯誤則拋出例外提醒使用者function_type的輸入有誤需要注意
+        raise ValueError('參數function_type必須為1、2、3其中之一!')
+if __name__ == '__main__':
+    y = bohachevsky_function([0, 0], function_type=1)
+    print(y) # 0.0
+    y = bohachevsky_function([0, 0], function_type=2)
+    print(y)  # 0.0
+    y = bohachevsky_function([0, 0], function_type=3)
+    print(y)  # 0.0
+</code></pre>
+<h2 id="griewank-function"><a class="header" href="#griewank-function"><a href="https://www.sfu.ca/~ssurjano/griewank.html">Griewank Function</a></a></h2>
+<p>換這個論文常見的測試函數了，其中要注意兩個東東，第一個是<strong>連加符號和連乘符號</strong>；第二個是在連乘計算中有出現將<strong>索引值<em>i</em>直接也加入運算</strong>的情況，此時需要再建立一個包含1~d的向量，要注意公式中索引是從1開始，在建立時需要特別特別注意！<br />
+我們來一步一步處理這個方程式吧，首先先來複習一下方程式長怎樣：<img src="images/day-08/02.png" alt="https://ithelp.ithome.com.tw/upload/images/20240503/20151029cmmtLmyX1L.png" /> 。</p>
+<ol>
+<li>處理索引值<em>i</em>：這部分使用np.arange根據起始值跟結束值建立一個向量就好了，注意終止值是要設定<code>d+1</code>這樣向量中元素才會是<code>1~d</code>。<code>i = np.arange(1, len(x)+1)</code></li>
+<li>處理連加符號跟連乘符號：<br />
+a. 連加符號使用<code>np.sum()</code>：裡面的計算只是解的所有元素平方摒除以4000而已，其實並不複雜。我們一樣以x1當作這項的名稱。程式長這樣：<code>x1 = np.sum(x**2 / 4000)</code>。<br />
+b. 連乘符號使用<code>np.prod()</code>：這邊就要注意也要將索引值也加進來運算了，方程式要計算解中的元素除以索引值的開根號並再進行連乘，最後要記得加負號喔！程式碼為：<code>x2 = -np.prod(np.cos(x/np.sqrt(i)))</code></li>
+<li>最後就是輸出結果啦，最後要記得+1喔！<code>return x1 + x2 + 1</code><br />
+Griewank Function的完整程式碼如下：</li>
+</ol>
+<!-- -->
+<pre><code>import numpy as np
+from typing import Union
+
+def griewank_function(x: Union[np.ndarray, list]):
+    x = np.array(x)
+    i = np.arange(1, len(x)+1)
+    x1 = np.sum(x**2 / 4000)
+    x2 = -np.prod(np.cos(x/np.sqrt(i)))
+    return x1 + x2 + 1
+
+if __name__ == '__main__':
+    y = griewank_function([1, 2, 3])
+    print(y) # 1.0170279701835734
+    y = griewank_function([0, 0, 0])
+    print(y) # 0.0
+</code></pre>
+<h2 id="schaffer-function-n2"><a class="header" href="#schaffer-function-n2"><a href="https://www.sfu.ca/~ssurjano/schaffer2.html">Schaffer Function N.2</a></a></h2>
+<p>今天最後一個測試函數就是這個長的很特殊的東西啦，可不要被它的外表嚇住囉，它的公式其實很簡單，就像下面這樣。<br />
+<img src="images/day-08/03.png" alt="https://ithelp.ithome.com.tw/upload/images/20240502/20151029gWc0wML5OB.png" /><br />
+它也是只限兩個變數輸入的函數，那我們就立刻來處理這個函數吧！首先先把分子分母都列出來，最後加上0.5就好了，非常簡單，程式碼就像這樣：<code>0.5 + (np.sin(x[0]**2-x[1]**2)**2 - 0.5) / (1+0.001*(x[0]**2+x[1]**2))**2</code>。<br />
+接著加入限制條件(輸入長度必須為2)以及副程式定義就完成囉！</p>
+<pre><code>import numpy as np
+from typing import Union
+
+def schaffer_function_N2(x: Union[np.ndarray, list]):
+    assert len(x) == 2, 'x的長度必須為2!'
+    return 0.5 + (np.sin(x[0]**2-x[1]**2)**2 - 0.5) / (1+0.001*(x[0]**2+x[1]**2))**2
+
+if __name__ == '__main__':
+    y = schaffer_function_N2([1, 2])
+    print(y)  # 0.02467994027357423
+    y = schaffer_function_N2([0, 0])
+    print(y)  # 0.0
+</code></pre>
+<h2 id="結語"><a class="header" href="#結語">結語</a></h2>
+<p>我們花了三天來介紹一些有趣的測試函數，雖然還有很多很多並未提及到，但本系列主軸並非是測試函數，所以就介紹幾個常用的。接下來就要正式進入最佳化演算法的篇章了，我會開始介紹各種基礎演算法的原理跟程式碼，接著就會進入主軸，模型最佳化的應用，接下來也敬請各位期待啦。</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="day-07.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="day-09.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="day-07.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="day-09.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
+
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    </body>
+</html>

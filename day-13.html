@@ -1,0 +1,300 @@
+<!DOCTYPE HTML>
+<html lang="zh-TW" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Day 13 基於生物學(biology-based)的啟發式演算法是甚麼？ - 調整AI超參數好煩躁？來試試看最佳化演算法吧！</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">調整AI超參數好煩躁？來試試看最佳化演算法吧！</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="day-13基於生物學biology-based的啟發式演算法是甚麼"><a class="header" href="#day-13基於生物學biology-based的啟發式演算法是甚麼">[Day 13]基於生物學(biology-based)的啟發式演算法是甚麼？</a></h1>
+<ul>
+<li>Day: 13</li>
+<li>Date: 2024-09-19 00:08:47</li>
+<li>Author: golucky_sir</li>
+<li>Source: https://ithelp.ithome.com.tw/articles/10353999</li>
+<li>Series: https://ithelp.ithome.com.tw/2020-12th-ironman/articles/7610</li>
+<li>Series Title: 調整AI超參數好煩躁？來試試看最佳化演算法吧！</li>
+</ul>
+<h2 id="前言"><a class="header" href="#前言">前言</a></h2>
+<p><a href="https://ithelp.ithome.com.tw/articles/10353227">昨天</a>介紹了基於人類行為的最佳化演算法，這些演算法基本上都是模擬人類社會中有的群體行為，無論是對抗疫情(CHIO)或是團隊合作(TOA)都一樣。今天要來介紹的是基於生物學的幾個演算法，和<a href="https://ithelp.ithome.com.tw/articles/10351664">基於粒子</a>的演算法不同，基於粒子的演算法著重探討「個體」的行為；今天介紹的基於生物學的演算法更著重於整個生物群集和環境、生態系等的不同交互，不過廣義來說它們可以視為相同分類的啟發式演算法。<br />
+無論如何，這些演算法都能夠對之後我們實作的模型最佳化有著很好的幫助！</p>
+<h2 id="生物地理學演算法biogeography-based-optimization-bbo"><a class="header" href="#生物地理學演算法biogeography-based-optimization-bbo">生物地理學演算法(Biogeography-Based Optimization, BBO)</a></h2>
+<p>BBO是一個討論自然生物地理學及其數學的演算法，在2008年提出，根據<a href="https://doi.org/10.1109/TEVC.2008.919004">原始論文</a>介紹研究者的心態是「我們可以向大自然學習」。BBO和其他演算法例如PSO、GA等有共同的特徵，所以BBO也適用於PSO、GA等相同類型的問題。</p>
+<h3 id="bbo概念與原理"><a class="header" href="#bbo概念與原理">BBO概念與原理</a></h3>
+<p>BBO描述了生物物種如何進行遷移、新的物種是如何演化出現的、以及物種為何滅絕、如何滅絕，看起來就是更廣義的GA+PSO等演算法加起來。<br />
+在生物地理學中，適合生物居住的區域可以說是有很高的<strong>棲息地適宜度指標(Habitat Suitability Index, HSI)<strong>另外可以用來評估該地區是否可居住的指標為</strong>適宜性指標變數(Suitability Index Variable, SIV)</strong>。</p>
+<ul>
+<li>和HSI相關的有植物、物種、地形多樣性，以及降雨量、溫度、濕度等因素，這些因素也會影響SIV的變化。</li>
+</ul>
+<p>下圖是論文中提出的生物地理學的數學建模，從遷入率(immigration)和遷出率(emigration)反映該地區的物種數量，一般來說HSI高代表物種可能會越多，當該地區物種飽和後，物種就會傾向遷出去尋找新的資源肥沃的地區；反之亦然，HSI低代表物種數量少，所以來自其他地方流浪的物種就會傾向於入住該地區。<br />
+但如果該地區的HSI一直很低代表那裏根本不適合居住，所以久而久之那邊的物種就有可能會滅絕。<br />
+<img src="images/day-13/01.png" alt="https://ithelp.ithome.com.tw/upload/images/20240505/201510290sIv8y96Pv.png" /><br />
+圖. 單一棲息地的物種模型關係，圖源為<a href="https://doi.org/10.1109/TEVC.2008.919004">原始論文</a>。</p>
+<blockquote>
+<p>觀念上來說，BBO中將要帶入問題的整個解比喻為<strong>一個地區</strong>，解中的不同因素、特徵比喻為<strong>該地區的物種</strong>，而適應值(fitness value)比作為<strong>HSI</strong>。</p>
+</blockquote>
+<p>高HSI的地區會比較穩定，而低HSI的地區會受到高HSI的地區分享的物種，從而提升該地區的品質。<br />
+對照來說就是：高適應值的解會比較穩定，解與適應值不容易有大幅度的變化，而低適應值的解會受到高適應值的解分享的特徵，從而提升解的品質。</p>
+<p>理解了概念之後就要來介紹BBO的演算法原理了，圍繞著<strong>遷入率、遷出率、HSI等</strong>概念，接下來讓我來介紹BBO的流程吧。</p>
+<ol>
+<li><strong>初始化BBO的演算法跟參數</strong>：老樣子，BBO要初始化的東西有<strong>最大的物種數量</strong>、<strong>最大遷入率</strong>、<strong>最大遷出率</strong>、<strong>最大變異率</strong>、以及一個<strong>菁英主義參數(elitism parameter)</strong>。</li>
+<li><strong>隨機初始化各地區</strong>：隨機給所有地區一些物種(隨機初始化解的值)，並計算出所有地區的HSI(適應值)。其中最高HSI的地區會被作為<strong>菁英地區</strong>，論文中也使用這種方式來保留最佳的地區，<strong>避免這個最佳地區受到遷移的破壞</strong>。</li>
+<li><strong>計算地區資訊</strong>：接著對於所有地區的HSI來計算該地區的物種數量、遷入率跟遷出率。如下圖，其中S1是比較差的地區、S2是比較好的地區，它們之間的遷入率<em>λ</em>跟遷出率<em>μ</em>就如圖所示。</li>
+<li><strong>地區物種遷移</strong>：根據遷入率跟遷出率的機率，隨機的更新每個<strong>非菁英地區</strong>的物種(解的特徵)，並計算出每個地區新的HSI。</li>
+<li><strong>棲地隨機突變</strong>：對每個地區隨機更新物種數量，然後再隨機對每個非菁英地區進行變異，概念是模擬災難性的事件，通常一場災難等原因會導致該地區的物種、HSI等發生重大改變，變異完成後並重新計算HSI，這邊也會重新選擇新的<strong>菁英地區</strong>。並讓演算法的迭代次數+1。</li>
+<li><strong>是否迭代完成</strong>：循環步驟3.到步驟5.直到迭代結束，當迭代結束後就輸出BBO的最佳解。</li>
+</ol>
+<p><img src="images/day-13/02.png" alt="https://ithelp.ithome.com.tw/upload/images/20240505/20151029N2ThNo1WVd.png" /><br />
+圖. 地區物種數量與遷移率的關係圖，圖源為<a href="https://doi.org/10.1109/TEVC.2008.919004">原始論文</a>。</p>
+<h3 id="bbo總評"><a class="header" href="#bbo總評">BBO總評</a></h3>
+<p>BBO是一個很有趣的演算法，透過模擬很多地區的生態來尋求解，並考慮了許多因素來模擬自然環境中的演化。為此我也查閱了一些生物地理的相關文獻，發現作者確實有很好的從大自然中汲取靈感，並將之與個人的專業研究進行融合。<br />
+BBO研究據作者所述並沒有特別驗證過，來獲得普遍優秀於其他方法的結論，所以未來也可以嘗試以此為方向去比較看看其他演算法再來討論看看BBO有沒有可以改良的部分。</p>
+<h2 id="雜草演算法invasive-weed-optimization-iwo"><a class="header" href="#雜草演算法invasive-weed-optimization-iwo">雜草演算法(Invasive Weed Optimization, IWO))</a></h2>
+<p>雜草演算法應該也是有一段時間的演算法了，它是一種受到野外雜草互相侵略、殖民、生長的啟發而成的演算法。根據一些研究顯示雜草再殖民、侵略時的生長穩定性較高、適應性佳、又具備隨機性，所以這個以雜草為基準的演算法也能表現出上述特性。</p>
+<h3 id="iwo概念與原理"><a class="header" href="#iwo概念與原理">IWO概念與原理</a></h3>
+<p>IWO來自於一群野草的繁殖，這些野草可以透過有性生殖與無性生殖來繁殖，不過IWO著重探討有性生殖的開化結果，產生種子，生出種子後就會透過各種形式向外傳播，並找到其他適合生存的空間，不斷循環。通常IWO會歷經6個步驟來進行最佳化，以下是IWO的演算步驟。</p>
+<blockquote>
+<p>IWO是將不同雜草族群當作要代入問題的解，而適應值就是適應值，似乎沒有特別的比喻，若有錯誤再麻煩糾正了&gt;&lt;</p>
+</blockquote>
+<ol>
+<li><strong>初始化IWO</strong>：這步驟會確定<strong>族群和群集數量、大小</strong>(群集是會包含很多族群的概念，例如草原群集中會有斑馬族群、獅子族群等)，以及<strong>最大迭代次數</strong>，<strong>代入解的維度</strong>，<strong>一次生成種子數的最大值與最小值</strong>，<strong>區間步長的起始值跟最終值</strong>。</li>
+<li><strong>初始化雜草們</strong>：這步驟會隨機生成所有雜草族群的解，並計算所有雜草族群的適應值。</li>
+<li><strong>雜草開始繁殖</strong>：群集中的各種雜草族群能夠散波的種子數量是<strong>根據該族群的適應值決定</strong>的，具體如下圖所示，至於為何向下取整的原因舉例來說，基本上雜草不會生出2.3個種子，所以向下取整變成生成2個種子。</li>
+<li><strong>計算空間分布</strong>：IWO的種子會被隨機播種在求解空間中，這些種子會成長成新的雜草。至於如何播撒根據現實環境，通常一顆果實中的種子會在距離該族群不會太遠的地方播種對吧，如果是完全隨機的話代表在夏威夷的種子，播種於夏威夷跟播種於非洲埃及的機率會是相同的，這樣太不合理了。<br />
+所以基本上會根據初始會設定的<strong>區間步長的起始值跟最終值</strong>來決定距離原本族群特定步長距離<strong>被播種種子的機率高低</strong>。因此，高適應值且良好的雜草會生出比較多種子，也會有比較大的機會能夠播種在高適應值附近的空間中，也有可能會遠離較佳區域去遠方闖蕩；反之，低適應值劣勢的雜草會生成較少種子，藉此漸漸淘汰劣勢族群。</li>
+<li><strong>競爭生存機會</strong>：若各位有小花圃或者院子等，透過觀察這些地方我們可以知道，如果一種植物沒有產生種子，將會漸漸滅亡；而如果植物產生的種子很多，它很快就會遍佈整個花圃。<br />
+同理，IWO中的雜草們會透過互相競爭求得生存的機會，且為了<strong>維持平衡</strong>也要確保族群的大小在合理的範圍內。在種子播種之後他們會成長為雜草，也就是<strong>多了很多新的解</strong>，此時這些解會計算適應值，並將群集中所有雜草的適應值進行排列，並直接淘汰刪除掉後面劣勢的雜草，<strong>使整個雜草數量不會大於最大的雜草數量上限</strong>。完成後算一次迭代，將迭代次數+1。</li>
+<li><strong>是否迭代完成</strong>：重複步驟3.到步驟5.直到迭代結束，當迭代結束後就輸出IWO的族群歷史最佳解。</li>
+</ol>
+<p><img src="images/day-13/03.png" alt="https://ithelp.ithome.com.tw/upload/images/20240505/20151029Dl7SiK82nY.png" /><br />
+圖. 一群雜草群的種子生產關係，圖源於其<a href="https://pdfs.semanticscholar.org/734c/66e3757620d3d4016410057ee92f72a9853d.pdf">論文</a>。</p>
+<h3 id="iwo總評"><a class="header" href="#iwo總評">IWO總評</a></h3>
+<p>IWO也是一個不錯的演算法，與其它演算法不同的是一些演算法基本上族群數量會一直都是固定值，而IWO會透過播種來讓解的數量暫時變多，不過考量到平衡會再將劣勢的雜草淘汰。藉此可以更<strong>大量的保留最佳解</strong>，跟珊瑚礁演算法有點類似。這種做法還<strong>讓原本劣勢的雜草有繁殖後代的機會</strong>，說不定那些雜草的後代會一鳴驚人呢！所以這個機制基本上也是會鼓勵雜草們<strong>不要陷於局部最佳位置</strong>。<br />
+總得來說IWO是一個相當穩定、且適應性佳又同時具備隨機性的演算法。</p>
+<h2 id="結語"><a class="header" href="#結語">結語</a></h2>
+<p>這四天根據不同的基礎介紹了許多演算法，基本上還有許多雜七雜八的演算法，過於特殊導致在分類上比較少同性質的演算法，或是其他原因導致該演算法的特殊性，所以礙於篇幅就沒辦法在原理介紹中登場了，不過很多冷門的演算法都有包含在MealPy中，各位若有興趣在之後帶各位入門MealPy之後各位可以在嘗試使用更多不同的演算法來測試看看自己所應用到的問題喔！</p>
+<blockquote>
+<p>我們可以向大自然學習 --Dan Simon(BBO論文作者)</p>
+</blockquote>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="day-12.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="day-14.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="day-12.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="day-14.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
+
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    </body>
+</html>

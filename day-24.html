@@ -1,0 +1,363 @@
+<!DOCTYPE HTML>
+<html lang="zh-TW" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Day 24 由淺入深！介紹更多MealPy的API (2/2) - 調整AI超參數好煩躁？來試試看最佳化演算法吧！</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">調整AI超參數好煩躁？來試試看最佳化演算法吧！</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="day-24由淺入深介紹更多mealpy的api-22"><a class="header" href="#day-24由淺入深介紹更多mealpy的api-22">[Day 24]由淺入深！介紹更多MealPy的API (2/2)</a></h1>
+<ul>
+<li>Day: 24</li>
+<li>Date: 2024-09-30 00:01:06</li>
+<li>Author: golucky_sir</li>
+<li>Source: https://ithelp.ithome.com.tw/articles/10360827</li>
+<li>Series: https://ithelp.ithome.com.tw/2020-12th-ironman/articles/7610</li>
+<li>Series Title: 調整AI超參數好煩躁？來試試看最佳化演算法吧！</li>
+</ul>
+<h2 id="前言"><a class="header" href="#前言">前言</a></h2>
+<p><a href="https://ithelp.ithome.com.tw/articles/10360297">昨天</a>介紹了MealPy的一些進階功能，包括繪圖與多目標最佳化，今天要來向各位介紹自定義問題等技巧，自定義問題在使用比較複雜的問題例如深度學習模型最佳化等應用就很適合。<br />
+現在就來看看如何使用MealPy來實作這些功能吧~</p>
+<h2 id="mealpy自定義最佳化問題"><a class="header" href="#mealpy自定義最佳化問題">MealPy自定義最佳化問題</a></h2>
+<p>在MealPy自定義<strong>比較複雜的</strong>問題時也會建立一個額外類別，並在其中定義所需的輸入參數，就不單純只是建立副程式，不過具體要如何設定還是要看當下的問題以及個人的喜好等。<br />
+在MealPy中設定自定義問題時我們需要繼承<code>Problem</code>類別：</p>
+<pre><code>from mealpy import Problem
+class MyProblem(Problem):
+    pass
+</code></pre>
+<p>以下我將以<strong>使用<a href="https://doi.org/10.1016/j.future.2020.03.055">黏菌最佳化演算法(Slime Mould Algorithm, SMA)</a>對Griewank Function進行最佳化</strong>為例為各位簡單展示如何使用MealPy自定義最佳化問題。</p>
+<ol>
+<li>
+<p><strong>定義求解類別以及初始化</strong>：這部分主要要注意繼承類別，以及初始化。</p>
+<ul>
+<li>在MealPy中設定自定義問題時我們需要繼承<code>Problem</code>類別：</li>
+</ul>
+<!-- -->
+<pre><code>from mealpy import Problem
+class MyProblem(Problem):
+    pass
+</code></pre>
+<ul>
+<li>接著我們要進行初始化，初始化有一些東西需要設定，基本上就是把問題字典中的key作為類別初始化需要設定的參數，在呼叫問題類別時就直接把這些部分都設定好了。</li>
+</ul>
+<!-- -->
+<pre><code>def __init__(self, minmax, bounds=None, name="", **kwargs):  # 可以根據需求自定義其他參數
+    self.name = name
+    # 可以設定其他參數，或者進行其他初始化
+    super().__init__(bounds, minmax, **kwargs)
+</code></pre>
+</li>
+<li>
+<p><strong>定義適應值計算方式</strong>：這部分就是以往我們定義適應值的計算方式了，不過副程式名稱要注意要繼承自<code>Problem</code>類別，該方法名稱為<code>def obj_func(self, x):</code>，完整程式如下。</p>
+<pre><code>def obj_func(self, x):
+    # 其他處理，將輸入x轉換為numpy陣列的形式
+    x = np.array(x)
+    # 定義目標函數的計算
+    i = np.arange(1, len(x) + 1)
+    x1 = np.sum(x ** 2 / 4000)
+    x2 = -np.prod(np.cos(x / np.sqrt(i)))
+    return x1 + x2 + 1  # 定義回傳適應值
+</code></pre>
+</li>
+<li>
+<p><strong>定義其他功能</strong>：最後就可以定義其他功能了，看有沒有需要針對問題或者收集實驗資料等擴充一些功能都可以設定。<br />
+假設我想要定義一個方法是<strong>可以繪製出收斂過程圖的話</strong>，那可以這樣做：</p>
+<pre><code>def plot_result(self):
+    optimizer.history.save_global_objectives_chart(filename="result/global objectives chart")
+</code></pre>
+</li>
+<li>
+<p><strong>求解問題</strong>：這部分就只是呼叫自定義的問題，前幾天的教學是要設定問題字典作為設定問題中一些參數的方式，如果使用自定義問題的話，就可以直接將這些參數在初始化問題時一併傳入，除此之外也可以設定其他初始化參數，在面對比較複雜的問題會比較好用。最後就是定義演算法並直接求解即可。<br />
+以下為這部分的程式範例。</p>
+<pre><code># 設定問題，問題中的設定會作為初始化參數傳遞進去。
+problem = GriewankFunction(bounds=FloatVar(lb=[-600] * 10, ub=[600] * 10),
+                           name="Griewank Function", minmax="min")
+# 求解問題
+optimizer = SMA.OriginalSMA(epoch=30, pop_size=50, pr=0.03)
+optimizer.solve(problem=problem)
+# 繪製收斂曲線
+problem.plot_result()
+</code></pre>
+</li>
+</ol>
+<h2 id="儲存--載入最佳化試驗"><a class="header" href="#儲存--載入最佳化試驗">儲存 &amp; 載入最佳化試驗</a></h2>
+<p>接著我們要來討論如何儲存或者載入最佳化的試驗，不過目前根據官方文檔說明，目前似乎還沒提供方法可以讓原本的試驗可以繼續進行的能力。<br />
+現階段保存模型之後僅提供調用資料確認試驗的細節等等，不像之前介紹的Optuna一樣可以繼承試驗來繼續最佳化。<br />
+要使用MealPy的儲存模型功能需要額外匯入一個模組：<code>from mealpy.utils import io</code>。接著只需要使用<code>io.save_model()</code>方法就可以儲存模型了；之後要調用模型使用<code>io.load_model()</code>方法就好！<br />
+完整程式如下：</p>
+<pre><code>from mealpy.utils import io  # 儲存、讀取演算法時使用
+
+# 主程式，定義演算法與問題並求解
+
+# 儲存最佳化試驗
+io.save_model(optimizer, "模型儲存路徑.pkl")  # 指定儲存路徑
+# 讀取最佳化試驗，並且調用該次試驗的最佳解資訊
+optimizer_read = io.load_model("模型載入路徑.pkl")  # 指定載入路徑
+# 調用該次試驗時的最佳解資料
+print(f"Best solution: {optimizer_read.g_best.solution}, Best fitness: {optimizer_read.g_best.target.fitness}")
+</code></pre>
+<h2 id="結語"><a class="header" href="#結語">結語</a></h2>
+<p>今天介紹了如何使用MealPy自定義問題類別，這在之後用於深度學習模型的最佳化時通常可以更好的分割程式碼，將程式區分出不同部分來讓提高程式碼的可讀性。<br />
+另外也向各位分享了儲存與載入最佳化試驗的方式，可以提供各位保存自己的試驗，在之後可以調用出來分析，就不怕試驗的過程遺失導致要重新實驗了。<br />
+接下來我將介紹如何使用MealPy來進行模型參數的最佳化，基本上跟Optuna差不多，只是使用MealPy可以再選擇更多啟發式演算法來實驗看看，這些演算法都沒有說誰是絕對優秀的，所以多方比較有時候才能得到比較完整且令人滿意的內容喔~</p>
+<h2 id="附錄完整程式"><a class="header" href="#附錄完整程式">附錄：完整程式</a></h2>
+<pre><code>from mealpy import FloatVar, Problem, SMA
+from mealpy.utils import io  # 儲存、讀取演算法時使用
+import numpy as np
+
+class GriewankFunction(Problem):
+    def __init__(self, minmax, bounds=None, name="", **kwargs):  # 可以根據需求自定義其他參數
+        self.name = name
+        # 可以設定其他參數，或者進行其他初始化
+        super().__init__(bounds, minmax, **kwargs)
+
+    def obj_func(self, x):
+        # 其他處理，將輸入x轉換為numpy陣列的形式
+        x = np.array(x)
+        # 定義目標函數的計算
+        i = np.arange(1, len(x) + 1)
+        x1 = np.sum(x ** 2 / 4000)
+        x2 = -np.prod(np.cos(x / np.sqrt(i)))
+        return x1 + x2 + 1  # 定義回傳適應值
+
+    def plot_result(self):
+        optimizer.history.save_global_objectives_chart(filename="result/global objectives chart")
+
+# 設定問題，問題中的設定會作為初始化參數傳遞進去。
+problem = GriewankFunction(bounds=FloatVar(lb=[-600] * 10, ub=[600] * 10),
+                           name="Griewank Function", minmax="min")
+# 求解問題
+optimizer = SMA.OriginalSMA(epoch=30, pop_size=50, pr=0.03)
+optimizer.solve(problem=problem)
+# 繪製收斂曲線
+problem.plot_result()
+
+# 儲存最佳化試驗
+io.save_model(optimizer, "result/SMA optimizer.pkl")  # 指定儲存路徑
+# 讀取最佳化試驗，並且調用該次試驗的最佳解資訊
+optimizer_read = io.load_model("result/SMA optimizer.pkl")  # 指定載入路徑
+# 調用該次試驗時的最佳解資料
+print(f"Best solution: {optimizer_read.g_best.solution}, Best fitness: {optimizer_read.g_best.target.fitness}")
+</code></pre>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="day-23.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="day-25.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="day-23.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="day-25.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
+
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    </body>
+</html>

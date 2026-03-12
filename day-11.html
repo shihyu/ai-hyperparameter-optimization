@@ -1,0 +1,278 @@
+<!DOCTYPE HTML>
+<html lang="zh-TW" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Day 11 基於進化(evolutionary-based)的啟發式演算法是甚麼？ - 調整AI超參數好煩躁？來試試看最佳化演算法吧！</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">調整AI超參數好煩躁？來試試看最佳化演算法吧！</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="day-11基於進化evolutionary-based的啟發式演算法是甚麼"><a class="header" href="#day-11基於進化evolutionary-based的啟發式演算法是甚麼">[Day 11]基於進化(evolutionary-based)的啟發式演算法是甚麼？</a></h1>
+<ul>
+<li>Day: 11</li>
+<li>Date: 2024-09-17 00:22:15</li>
+<li>Author: golucky_sir</li>
+<li>Source: https://ithelp.ithome.com.tw/articles/10352543</li>
+<li>Series: https://ithelp.ithome.com.tw/2020-12th-ironman/articles/7610</li>
+<li>Series Title: 調整AI超參數好煩躁？來試試看最佳化演算法吧！</li>
+</ul>
+<h2 id="前言"><a class="header" href="#前言">前言</a></h2>
+<p>昨天介紹了一些基於粒子的演算法，他們都是將生物群體比喻為粒子並根據不同的行為得到啟發而開發出這些演算法。今天要介紹的是基於進化策略的演算法，隨著地球這幾千萬年的變化，地球上的生物透過演化進化成了最適合當代條件下生存的物種。而基於進化的演算法就是基於這些原理進行最佳化，找出適應值(fitness)最高的解(物種)。</p>
+<h2 id="基因演算法genetic-algorithms-ga"><a class="header" href="#基因演算法genetic-algorithms-ga">基因演算法(Genetic Algorithms, GA)</a></h2>
+<p>與<a href="%E6%8F%92%E5%85%A5Day10">粒子群最佳化演算法(PSO)</a>一樣基礎、一樣廣為人知的演算法，GA和PSO有著完全不同的機制，透過**突變(Mutation)**這樣的機制來盡量避免陷入局部最佳解，為演算結果新增了一些變數，GA就類似於生物繁衍時的基因遺傳等概念，接下來就來看看GA的原理吧。</p>
+<h3 id="概念"><a class="header" href="#概念">概念</a></h3>
+<p>GA的概念很簡單，大致上只有四個步驟，分別是<strong>評估(Evaluation)、選擇(Selection)、交配(Crossover)、突變</strong>，大致上GA就是重複這四個步驟而逐漸將適合的結果保留，不適合的結果淘汰掉，相當於達爾文的天擇說。接下來我將大致簡述基因演算法的這幾個步驟，基本上GA演算法網路上非常多的教學，問GPT應該也能得到大致正確的結果。<a href="https://medium.com/hunter-cheng/python-%E5%9F%BA%E5%9B%A0%E6%BC%94%E7%AE%97%E6%B3%95-genetic-algorithm-ga-%E6%B1%82%E8%A7%A3%E6%9C%80%E4%BD%B3%E5%8C%96%E5%95%8F%E9%A1%8C-b7e6d635922">[參考文章1]</a>、<a href="https://ithelp.ithome.com.tw/articles/10216099">[參考文章2]</a></p>
+<ol>
+<li><strong>初始化</strong>：和大多數演算法一樣，GA演算法也要進行初始化並設定一些數值以及變數。初始化所需的東東有<strong>染色體</strong>，和昨天的粒子不同，昨天以粒子來形容各種要帶入問題的解，而今天GA是以染色體當作要帶入問題的解。每條染色體都是一個相同長度的向量，內容就是要帶入問題的那些因素。</li>
+<li><strong>評估</strong>：首先初始化後會隨機產生初始的染色體們，這些染色體和<a href="">昨天</a>介紹的那些粒子一樣，因為不知道問題的分布所以初始生成都是完全隨機的。生成之後的染色體們會根據自身的資訊計算出適應值(fitness value)。</li>
+<li><strong>選擇</strong>：為了演化出更加優良的「後代」，GA會從最一開始的染色體們中尋找優秀的染色體，選擇的方法會採用<strong>輪盤法</strong>，簡單來說就是每個染色體的適應值高低會成為被選擇的機率高低。除此之外也有其他選擇法被使用，例如<strong>菁英挑選法</strong>，使用這個方法就是能保證最優秀的幾個結果會被保留下來。</li>
+<li><strong>交配</strong>：交配會根據機率來決定，如果隨機變數的值小於交配閥值則會進行交配，交配方法會依照隨機數決定斷點，接著根據此斷點將兩個染色體都切成兩部分並重新組合成新的染色體。</li>
+<li><strong>突變</strong>：突變也會根據機率發生，若隨機數低於設定的突變率閥值的話則會突變，突變方式很簡單，隨機挑選染色體中的幾個內容中數值的位元，並將隨機位元的0與1進行對調，這些數值資料中變為二進制之後隨機突變就會有一種與原來資料似是而非的感覺。這步驟完成後基本上染色體就會變得跟初始的染色體不同的一群新的染色體了。</li>
+<li>重複第2.步到第5.步，直到迭代結束，迭代結束後就輸出最佳的解。</li>
+</ol>
+<h3 id="總評"><a class="header" href="#總評">總評</a></h3>
+<p>GA作為啟發式演算法入門必學的一個演算法，它的優點就是容易上手、速度快，但有時也不可避免的容易陷入局部最佳解，依靠微小的突變機率又剛好突變到適合的位置更佳的不容易TT，另外因為適應值會重複計算，所以像在AI模型最佳化時重新計算類似結果就會造成運算資源不必要的浪費。不過以GA為基礎的演算法也有許多被研發出來，對於不同的應用也算是有不同的使用方式。</p>
+<h2 id="珊瑚礁演算法coral-reefs-optimization-cro"><a class="header" href="#珊瑚礁演算法coral-reefs-optimization-cro">珊瑚礁演算法(Coral Reefs Optimization, CRO)</a></h2>
+<p><a href="http://agamenon.tsc.uah.es/Personales/sancho/ASMDA2013_CRO.pdf">珊瑚礁演算法</a>是2013年被提出的演算法，作者受到珊瑚蟲繁衍生存過程中的啟發而創造的演算法。</p>
+<h3 id="概念與原理"><a class="header" href="#概念與原理">概念與原理</a></h3>
+<p>珊瑚礁演算法就是根據珊瑚蟲繁衍的方式去設計的，各位有興趣可以去看看珊瑚蟲繁衍的壯闊景象。這個演算法基本上也是幾個步驟循環而找到比較好的解。</p>
+<ol>
+<li><strong>初始化</strong>：老套的初始化，CRO的初始化會假設一個珊瑚礁，這個珊瑚礁會有很多空間給珊瑚蟲生存，空間數量為<em>N</em>，那各位可能會好奇珊瑚蟲的數量呢？其實初始化還要設定空間中有珊瑚蟲居住的比例<em>p</em>，所以珊瑚蟲數量是<em>p×N</em>。和GA等演算法類似，CRO是以珊瑚蟲來當作要代入問題的解。</li>
+<li><strong>珊瑚蟲的有性繁殖</strong>：這部分分成兩個繁殖方式，有性繁殖與無性繁殖。有性繁殖又分為珊瑚礁外部的有性生殖與珊瑚礁內部的有性生殖，接下來我會來分別介紹這兩種生殖方式。首先會將珊瑚蟲分為外部與內部的珊瑚蟲。
+<ul>
+<li><strong>珊瑚礁外部的有性生殖</strong>：這部分會先將內部珊瑚蟲分成兩個群體，公珊瑚蟲與母珊瑚蟲。接著公母珊瑚蟲會類似GA那樣進行交配產生新的子代。</li>
+<li><strong>珊瑚礁內部的有性生殖</strong>：這部分會將外部的珊瑚蟲直接隨機產生一些子代。</li>
+</ul>
+</li>
+<li><strong>更替珊瑚蟲</strong>：這步驟會讓所有新的珊瑚蟲去找珊瑚礁中還沒被佔領的空間，如果該空間沒珊瑚蟲則該子代就可以直接佔領；若該空間有珊瑚蟲則需要比較適應值，適應值高的珊瑚蟲可以入住該空間，適應值低的則會被趕出來(有點心酸)。子代的珊瑚蟲會嘗試幾次佔領，若經過特定次數還沒佔領成功就會死亡。能夠嘗試多次佔領是因為如果只能一次定生死的話，那有可能第二高的珊瑚蟲就直接被第一高的珊瑚蟲幹掉了，白白損失一個優秀「蟲」才。</li>
+<li><strong>珊瑚蟲的無性繁殖</strong>：當珊瑚礁所有空間都被佔領時，則根據特定比例選出一些高適應值的珊瑚蟲，並進行無性繁殖的方式複製出子代來並進行珊瑚礁的占據，也就是進行第3步驟。</li>
+<li><strong>淘汰弱小的珊瑚蟲</strong>：此步驟比較殘忍，會根據特定比例選出一些低適應值的珊瑚蟲並進行「人道毀滅」，藉此將珊瑚礁騰出一些空間來供下一次迭代使用。完成後算一次迭代，迭代次數+1。</li>
+<li>重複步驟2.到步驟5.值到迭代結束，並輸出整個群體的最佳解以及適應值。</li>
+</ol>
+<h3 id="總評-1"><a class="header" href="#總評-1">總評</a></h3>
+<p>因為內部有性生殖的部分和GA一樣，透過交配產生新子代會導致最佳化方向是比較隨機的，不像基於粒子的演算法會有一個優化方向，這會使CRO的最佳化不容易收斂(GA也一樣)，這類型演算法太依賴初代的能力了。且CRO目前是直接讓適應值高的珊瑚蟲取代適應值低的珊瑚蟲，這會比較不利於種群的多樣性，非常容易陷入局部最佳解。<br />
+不過目前有很多研究用於針對這些問題提出改良方法，例如借鑑PSO的優化方向，將更替珊瑚蟲加入一些機制，目前由CRO延伸出來的演算法能力有比較好，也可以跳出局部最佳解的位置去尋找其他解。<br />
+<a href="https://xuebao.neu.edu.cn/natural/EN/10.12068/j.issn.1005-3026.2020.02.003">參考資料</a></p>
+<h2 id="結語"><a class="header" href="#結語">結語</a></h2>
+<p>今天分享了幾個基於進化的演算法，明天會繼續分享其他概念的最佳化演算法，基於進化的演算法目前來說比較少見，因為進化過程中大方向都是類似的，並不像不同物種有不同行為那樣比較好受到啟發。但目前進化為基礎的演算法像GA等都有不少的變種演算法，或多或少都做了一些微調並更加契合研究的主題根所需的功能。</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="day-10.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="day-12.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="day-10.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="day-12.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
+
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    </body>
+</html>

@@ -1,0 +1,299 @@
+<!DOCTYPE HTML>
+<html lang="zh-TW" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Day 07 根據方程式來寫出測試函數的程式吧！(2/3) - 調整AI超參數好煩躁？來試試看最佳化演算法吧！</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">調整AI超參數好煩躁？來試試看最佳化演算法吧！</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="day-7根據方程式來寫出測試函數的程式吧23"><a class="header" href="#day-7根據方程式來寫出測試函數的程式吧23">[Day 7]根據方程式來寫出測試函數的程式吧！(2/3)</a></h1>
+<ul>
+<li>Day: 7</li>
+<li>Date: 2024-09-13 00:06:44</li>
+<li>Author: golucky_sir</li>
+<li>Source: https://ithelp.ithome.com.tw/articles/10349865</li>
+<li>Series: https://ithelp.ithome.com.tw/2020-12th-ironman/articles/7610</li>
+<li>Series Title: 調整AI超參數好煩躁？來試試看最佳化演算法吧！</li>
+</ul>
+<h2 id="前言"><a class="header" href="#前言">前言</a></h2>
+<p>昨天帶各位實作了三個測試函數，不知道有沒有被嚇到，說實在的其實要將數學公式簡潔的化為程式是有一點難度的，所以希望各位還能繼續保持下去！當方程式成功被解析並化為程式寫出來的時候我常常會有一種超強烈的成就感襲來。今天會繼續和各位一起實作三個測試函數，請各位繼續鼓起勇氣直面這些方程式吧！</p>
+<h2 id="cross-in-tray-function"><a class="header" href="#cross-in-tray-function"><a href="https://www.sfu.ca/~ssurjano/crossit.html">Cross-in-tray Function</a></a></h2>
+<p>這個函數只接受兩個變數輸入，要特別注意，所以在程式上我會習慣使用assert斷言，確保輸入是有兩個元素的向量<code>assert len(x) == 2, 'x的長度必須為2!'</code>，接著就可以來處理輸入的程式了，因為只有兩個輸入變數需要處理所以程式寫起來不會比昨天還困難，公式拆解如下：<br />
+<img src="images/day-07/01.png" alt="https://ithelp.ithome.com.tw/upload/images/20240502/201510295ZTFundiBX.png" /><br />
+先把紅色框框的第一步寫出來，先處理絕對值內的東西(<code>np.abs(100 - np.sqrt(x[0]**2 + x[1]**2)/np.pi)</code>)再把這個結果進行exp運算(<code>np.exp(np.abs(100 - np.sqrt(x[0]**2 + x[1]**2)/np.pi))</code>)。<br />
+很輕鬆吧，然後要來處理第二部藍色框框的東東，也就是兩個變數的sin值和第一步的結果相乘並取絕對值，程式碼如下(包括第一步的結果)：<br />
+<code>np.abs(np.sin(x[0]) * np.sin(x[1]) * np.exp(np.abs(100 - np.sqrt(x[0]**2 + x[1]**2)/np.pi)))</code><br />
+接著就是處理剩下的小東西了，剛剛的結果先+1接著算0.1次方最後乘以-0.0001就是結果了！<br />
+<code>-0.0001*(np.abs(np.sin(x[0]) * np.sin(x[1]) * np.exp(np.abs(100 - np.sqrt(x[0]**2 + x[1]**2)/np.pi))) + 1)**0.1</code></p>
+<p>建立起來並不複雜，接下來就要確認一下帶入最佳解能不能得到全局最小值了。完整程式如下：</p>
+<pre><code>import numpy as np
+from typing import Union
+
+def cross_in_tray_function(x: Union[np.ndarray, list]):
+    assert len(x) == 2, 'x的長度必須為2!'
+    return -0.0001*(np.abs(np.sin(x[0]) * np.sin(x[1]) * np.exp(np.abs(100 - np.sqrt(x[0]**2 + x[1]**2)/np.pi))) + 1)**0.1
+
+if __name__ == '__main__':
+    y = cross_in_tray_function([1.3491, 1.3491])
+    print(y) #-2.0626118504479614
+</code></pre>
+<h2 id="bukin-function"><a class="header" href="#bukin-function"><a href="https://www.sfu.ca/~ssurjano/bukin6.html">Bukin Function</a></a></h2>
+<p>接下來要來介紹酷酷函數了，它也是一樣接受兩個輸入，所以程式寫起來相當容易而且公式也沒有很長，我們就一股作氣把它寫出來吧！首先先來複習一下公式長怎樣：<img src="images/day-07/02.png" alt="https://ithelp.ithome.com.tw/upload/images/20240502/20151029xHze3ChqRV.png" /><br />
+接著就來根據公式寫出程式吧！<br />
+<code>100*np.sqrt(np.abs(x[1]-0.01*x[0]**2)) + 0.01*np.abs(x[0]+10)</code><br />
+接著完整程式如下：</p>
+<pre><code>import numpy as np
+from typing import Union
+
+def bukin_function(x: Union[np.ndarray, list]):
+    assert len(x) == 2, 'x的長度必須為2!'
+    return 100*np.sqrt(np.abs(x[1]-0.01*x[0]**2)) + 0.01*np.abs(x[0]+10)
+
+if __name__ == '__main__':
+    y = bukin_function([-10, 1])
+    print(y) #0.0
+</code></pre>
+<p>很容易吧！若被昨天的Levy Function打擊到信心的朋友們希望這能重振你的信心~接下來就來講今天最後一個函數吧。</p>
+<h2 id="rastrigin-function"><a class="header" href="#rastrigin-function"><a href="https://www.sfu.ca/~ssurjano/rastr.html">Rastrigin Function</a></a></h2>
+<p>這個函數就是昨天提到很像鐘乳石洞窟的函數，它是不限制輸入長度的，所以各位要先看一下公式：<br />
+<img src="images/day-07/03.png" alt="https://ithelp.ithome.com.tw/upload/images/20240502/20151029HOsrjkkcv8.png" /><br />
+應該不用我多說了吧，先來處理連加符號裡面的東東吧<code>np.sum(x**2 - 10*np.cos(2*np.pi*x))</code>，然後就是前面的<code>10d</code>了，這單純就是10乘以向量長度<code>len(x)</code>而已，非常簡單。<br />
+完整程式如下：</p>
+<pre><code>import numpy as np
+from typing import Union
+
+def rastrigin_function(x: Union[np.ndarray, list]):
+    x = np.array(x)
+    return 10*len(x) + np.sum(x**2 - 10*np.cos(2*np.pi*x))
+
+if __name__ == '__main__':
+    y = rastrigin_function([0, 0, 0, 0, 0])
+    print(y) #0.0
+</code></pre>
+<h2 id="結語"><a class="header" href="#結語">結語</a></h2>
+<p>以上就是今天帶各位介紹的另外三種測試函數，今天的內容比較簡單，希望各位可以快速消化完畢，對這些函數有問題的不妨參考看看我<a href="https://ithelp.ithome.com.tw/articles/10349247">第五天</a>的資料喔！也可以看看<a href="https://ithelp.ithome.com.tw/articles/10349553">昨天</a>的另外三個測試函數的實作。明天會把最後三個測試函數講完，接著就要正式進入最佳化演算法的介紹了，萬歲✌️</p>
+<blockquote>
+<p>寫這種程式實需要非常注意四則運算，以及算數的優先級！程式太長不妨分段、劃分好要處理的步驟等，再一步一步把程式寫出來就好了喔！</p>
+</blockquote>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="day-06.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="day-08.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="day-06.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="day-08.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
+
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    </body>
+</html>

@@ -1,0 +1,492 @@
+<!DOCTYPE HTML>
+<html lang="zh-TW" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Day 15 由淺入深！介紹更多Optuna的API(1/2) - 調整AI超參數好煩躁？來試試看最佳化演算法吧！</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">調整AI超參數好煩躁？來試試看最佳化演算法吧！</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="day-15由淺入深介紹更多optuna的api12"><a class="header" href="#day-15由淺入深介紹更多optuna的api12">[Day 15]由淺入深！介紹更多Optuna的API(1/2)</a></h1>
+<ul>
+<li>Day: 15</li>
+<li>Date: 2024-09-21 00:03:04</li>
+<li>Author: golucky_sir</li>
+<li>Source: https://ithelp.ithome.com.tw/articles/10355312</li>
+<li>Series: https://ithelp.ithome.com.tw/2020-12th-ironman/articles/7610</li>
+<li>Series Title: 調整AI超參數好煩躁？來試試看最佳化演算法吧！</li>
+</ul>
+<h2 id="前言"><a class="header" href="#前言">前言</a></h2>
+<p>真糟糕，<a href="https://ithelp.ithome.com.tw/articles/10354688">昨天</a>把基礎的Optuna相關功能都介紹完了，昨天本來想真的「淺談」這個套件的，介紹完那天就可以比較輕鬆XD。今天本來想說把基礎功能補齊，然後介紹視覺化部分就好了，不過既然有時間那多介紹一些也無妨。<br />
+昨天寫文章整個寫上頭了之後就把大部分我最常用的東西都介紹完了TT 好吧，那今天就要更用力的展現我的<em>畢生所學</em>了，基本上Optuna的功能還很多，不過基本上通常像昨天介紹的程式就可以應付一部分的實務應用了。<br />
+今天就來聊聊更多Optuna的功能吧！各位有興趣可以用昨天介紹的程式範例並加上今天的內容實作看看，或多或少可以增加程式執行的效率喔。</p>
+<h2 id="optuna其他進階功能"><a class="header" href="#optuna其他進階功能">Optuna其他進階功能</a></h2>
+<p>今天要來介紹更多進階功能，一起來看看Optuna還可以幹嘛吧，若對基本功能還不熟悉的歡迎看看我<a href="">昨天</a>的文章喔！</p>
+<h3 id="初始化試驗的更多方式"><a class="header" href="#初始化試驗的更多方式">初始化試驗的更多方式</a></h3>
+<p>Optuna初始化時會有一個固定寫法：<code>study = optuna.create_study()</code>，昨天有介紹到如果要設定最佳化目標時可以使用<code>direction</code>參數來定義演算法藥最大化適應值或是最小化適應值。除此之外也有一些其他功能可以設定，這些功能可以讓試驗變得更完整，也比較容易分析結果。</p>
+<ul>
+<li>
+<p><code>study_name</code>參數：用於針對試驗取名稱，可以更加清楚這個試驗是在幹嘛的。</p>
+</li>
+<li>
+<p><code>sampler</code>參數：用於定義演算法 <strong>從搜索空間採樣(sample)</strong> 的方式，這個參數預設是使用<code>TPESampler</code>，Tree-structured Parzen Estimator (TPE)這個演算法我們之後會來討論到原理，<a href="https://optuna.readthedocs.io/en/stable/reference/samplers/index.html">官方文檔</a>也有詳細介紹這些採樣方式。其他採樣方式還有，每個採樣器適合的任務以及一些限制條件需要看<a href="https://optuna.readthedocs.io/en/stable/reference/samplers/index.html">官方文檔</a>的說明比較好：</p>
+<ul>
+<li>optuna.samplers.GridSampler(seed=42)：較常用的</li>
+<li>optuna.samplers.RandomSampler(seed=42)：較常用的</li>
+<li>optuna.samplers.TPESampler(seed=42)：較常用的，妹特別設定則預設使用這個</li>
+<li>optuna.samplers.CmaEsSampler(seed=42)</li>
+<li>optuna.samplers.GPSampler(seed=42)</li>
+<li>optuna.samplers.PartialFixedSampler(seed=42)</li>
+<li>optuna.samplers.NSGAIISampler(seed=42)</li>
+<li>optuna.samplers.NSGAIIISampler(seed=42)</li>
+<li>optuna.samplers.QMCSampler(seed=42)</li>
+<li>optuna.samplers.BruteForceSampler(seed=42)</li>
+</ul>
+<blockquote>
+<p>所有採樣方式都有<code>seed</code>參數可以定義亂數種子，使亂數結果會固定住。</p>
+</blockquote>
+<p><code>sampler</code>與<code>study_name</code>參數使用的用法如下：</p>
+<pre><code>study = optuna.create_study(study_name='試驗名稱',
+                            sampler=optuna.samplers.TPESampler(seed=10))
+</code></pre>
+</li>
+</ul>
+<h3 id="objective副程式傳遞更多參數"><a class="header" href="#objective副程式傳遞更多參數">objective副程式傳遞更多參數</a></h3>
+<p>昨天有提到建立objective的寫法是<code>def objective(trial):</code>，但是實際應用上可能會需要進行更多複雜的應用，導致此副程式需要定義其他參數用於傳遞。現在就來介紹一下如果要傳遞其他參數的話要如何改寫程式吧。<br />
+我們來寫個程式，讓變數的最大值跟最小值變得可以在試驗時自己定義，接著定義2組試驗分別測試不同的帶入解範圍再看看效果，我們使用<a href="https://ithelp.ithome.com.tw/articles/10354688">昨天</a>提到的程式去修改。</p>
+<ol>
+<li>
+<p><strong>定義副程式</strong>：這邊一樣的定義副程式，但是可以新增其他傳遞參數。<br />
+<code>def objective(trial, high, low):</code>。</p>
+</li>
+<li>
+<p><strong>定義副程式內容</strong>：這個部份我們會重新定義要帶入解的定義域範圍，也就是x1跟x2的範圍，其他都不用更動。</p>
+<pre><code>x1 = trial.suggest_float('x1', low, high)
+x2 = trial.suggest_float('x2', low, high)
+</code></pre>
+</li>
+<li>
+<p><strong>定義2組試驗</strong>：昨天有提到，在定義Optuna的試驗時我們只需要將副程式的名稱作為參數傳入即可，但是這樣的壞處就是無法傳遞自定義的參數。為了解決這個問題我們要使用匿名函數<code>lambda</code>來解決，這樣就可以在傳遞參數(<code>objective</code>)的時候直接再定義一個匿名函數並直接執行<code>objective</code>副程式並傳遞自訂參數進去，具體用法如下：</p>
+<pre><code>study1 = optuna.create_study(direction='minimize')
+study1.optimize(lambda trial: objective(trial, 10, -10), n_trials=100)
+
+study2 = optuna.create_study(direction='minimize')
+study2.optimize(lambda trial: objective(trial, 100, -100), n_trials=100)
+</code></pre>
+</li>
+</ol>
+<p>這個部分的完整程式如下：</p>
+<pre><code>import optuna
+import numpy as np
+from typing import Union
+
+def schaffer_function_N2(x: Union[np.ndarray, list]):
+    assert len(x) == 2, 'x的長度必須為2!'
+    return 0.5 + (np.sin(x[0]**2-x[1]**2)**2 - 0.5) / (1+0.001*(x[0]**2+x[1]**2))**2
+
+def objective(trial, high, low):
+    x1 = trial.suggest_float('x1', low, high)
+    x2 = trial.suggest_float('x2', low, high)
+
+    x = [x1, x2]
+    return schaffer_function_N2(x)
+
+study1 = optuna.create_study(direction='minimize')
+study1.optimize(lambda trial: objective(trial, 10, -10), n_trials=100)
+
+study2 = optuna.create_study(direction='minimize')
+study2.optimize(lambda trial: objective(trial, 100, -100), n_trials=100)
+
+print('第一組試驗歷史最佳適應值：', study1.best_value)
+print('第一組試驗歷史最佳解：', study1.best_params)
+print('第二組試驗歷史最佳適應值：', study2.best_value)
+print('第二組試驗歷史最佳解：', study2.best_params)
+</code></pre>
+<h3 id="定義多目標最佳化"><a class="header" href="#定義多目標最佳化">定義多目標最佳化</a></h3>
+<p>有時候要考慮深度學習模型的<strong>效能</strong>，以及模型計算的<strong>時間</strong>。一般來說，效能越好模型參數量就會多，理所當然地計算時間就會拉長，基本上這兩個目標是會<strong>有衝突</strong>的，所以在這之中要找到一個平衡的因素就很重要。<br />
+通常要定義多目標問題會在<code>return</code>的部分直接定義所有回傳結果，這次我們來定義回傳<code>x1</code>和<code>x2</code>的<code>schaffer_function_N2</code>結果(要最小化)，當這個最小化時<code>x1</code>和<code>x2</code>都會趨近於0；所以我們可以再定義另一組回傳為<code>x1+x2</code>(要最大化)，當這個最大化時<code>x1</code>和<code>x2</code>都會趨近於上限，如此一來這兩個目標就會出現衝突，作為訓練模型<strong>效能</strong>與<strong>時間</strong>衝突的模擬，實際問題之後有機會再來實作看看~</p>
+<ol>
+<li>
+<p><strong>設定objective副程式適應值回傳</strong>：只需要把要回傳的目標一一回傳就好了，程式撰寫為<code>return schaffer_function_N2(x), x1+x2</code>。</p>
+</li>
+<li>
+<p><strong>設定兩個不同目標的最佳化方向</strong>：剛剛有說到一個目標要最小化(<code>schaffer_function_N2(x1,x2)</code>)，另一個目標要最大化<code>x1+x2</code>，在初始化定義試驗時就要先設定兩個目標的最佳化方向了。程式為：<code>study = optuna.create_study(directions=['minimize', 'maximize'])</code>，注意原本的<code>direction</code>參數後面要加s變成<code>directions</code>參數，後面傳遞進去的參數為一個<code>list</code>分別代表不同目標的最佳化目標。</p>
+</li>
+<li>
+<p><strong>print出歷史較佳解</strong>：這部分有些需要更改，因為現在有多個目標且彼此衝突，所以程式會將比較優秀的幾個結果，有<strong>兩個目標的最佳值</strong>跟一些<strong>平衡兩個目標的較佳值</strong>都會print出來，跟等等介紹的<strong>帕雷托前沿</strong>會有一點關係，這些解就是在帕雷托前沿上，這步驟的程式碼如下：</p>
+<pre><code>for i in range(len(study.best_trials)):
+    print(f'試驗歷史較佳解-{i}：', study.best_trials[i].params)
+    print(f'試驗歷史較佳適應值-{i}：', study.best_trials[i].values)
+    print('---我是分隔線---')
+</code></pre>
+</li>
+<li>
+<p><strong>繪製帕雷托前沿(Pareto Front)結果圖</strong>：<a href="https://zh.wikipedia.org/zh-tw/%E5%B8%95%E7%B4%AF%E6%89%98%E6%95%88%E7%8E%87">帕雷托效率</a>是一個經濟學中的概念，它是指分配中的一個理想狀態，當無法同時滿足多個目標時，能夠採取的最佳解。<br />
+關於視覺化會在下個段落提到，但是下個段落所使用的範例都是單目標最佳化，所以在此先提到多目標可以使用的結果圖，程式碼如下。</p>
+<pre><code>import matplotlib.pyplot as plt
+optuna.visualization.matplotlib.plot_pareto_front(study)
+plt.show()
+</code></pre>
+<p>結果圖片如下圖，可以看到兩個不同目標<strong>個別</strong>的最佳值，以及求多目標最佳的一些前沿值。<br />
+<img src="images/day-15/01.png" alt="https://ithelp.ithome.com.tw/upload/images/20240507/20151029P9UH7DjCpc.png" /></p>
+</li>
+</ol>
+<h3 id="視覺化試驗過程"><a class="header" href="#視覺化試驗過程">視覺化試驗過程</a></h3>
+<p>如果可以把試驗過程進行視覺化的話那就可以很方便地觀察到試驗的過程並加以分析，Optuna基本上也幫各位把這部分給做好了，Optuna有將Matplotlib做為後端，使各位可以進一步用Matplotlib來對圖片再進行修飾(但圖片原則上已經很完整了)，也可以用Matplotlib的功能儲存圖片等，相當方便。<br />
+以下是一些視覺化過程的範例，各位若想完整了解也可以去看看<a href="https://optuna.readthedocs.io/en/stable/reference/visualization/matplotlib.html">官方文檔</a>關於這部分的說明。</p>
+<ul>
+<li>
+<p><strong>繪製參數關係等高線圖</strong>：可以使用<code>optuna.visualization.matplotlib.plot_contour(study)</code>達成，這個圖片可以更清楚的看到不同參數之間的搭配是如何影響適應值的，我們來繪製上面應用中x1和x2的關係對應吧。</p>
+<pre><code>import matplotlib.pyplot as plt
+optuna.visualization.matplotlib.plot_contour(study)
+plt.show() # 要記得把圖片顯示出來喔！
+</code></pre>
+<p>結果如下，如果有更多試驗變數的話，會以矩陣的方式來繪製出兩兩特徵之間的關係：<br />
+<img src="images/day-15/02.png" alt="https://ithelp.ithome.com.tw/upload/images/20240507/20151029g8et91wcIB.png" /></p>
+</li>
+<li>
+<p><strong>繪製目標經驗分布函數(EDF)圖</strong>：這可以繪製不同試驗中不同的EDF結果，我們可以拿上面實作的兩組試驗來當作範例，具體用法如下，要注意<strong>定義試驗的名稱，試驗名稱會成為圖表的線條label</strong>：</p>
+<pre><code>import matplotlib.pyplot as plt
+optuna.visualization.matplotlib.plot_edf([study1, study2])
+plt.show()
+</code></pre>
+<p>結果如下：<br />
+<img src="images/day-15/03.png" alt="https://ithelp.ithome.com.tw/upload/images/20240507/2015102993SCWzizdQ.png" /></p>
+</li>
+<li>
+<p><strong>繪製高維度參數關係圖</strong>：如果輸入變數很多的話可以使用這個來觀察每個參數的對照關係圖，多個參數搭配之間會造成的適應值。程式如下：</p>
+<pre><code>import matplotlib.pyplot as plt
+optuna.visualization.matplotlib.plot_parallel_coordinate(study1)
+plt.tight_layout() # 把所有內容塞進圖表，否則有些內容會超出圖表。
+plt.show()
+</code></pre>
+<p>結果如下，只有兩個參數的話會比較建議使用<strong>參數關係等高線圖</strong>，如果有更多變數的話就可以使用這個方式繪製圖片。<br />
+<img src="images/day-15/04.png" alt="https://ithelp.ithome.com.tw/upload/images/20240507/20151029OK48oAAfiy.png" /></p>
+</li>
+<li>
+<p><strong>繪製試驗的最佳化過程</strong>：這個就很重要了！他可以將每次試驗的結果都繪製出來，並使用一條曲線來視覺化最佳化的過程，這樣就可以不用看著互動視窗回傳的結果，然後被數字淹沒了。程式如下：</p>
+<pre><code>import matplotlib.pyplot as plt
+optuna.visualization.matplotlib.plot_optimization_history(study1)
+plt.tight_layout() # 把所有內容塞進圖表，否則有些內容會超出圖表。
+plt.show()
+</code></pre>
+<p>結果如下，可以看到最佳化的收斂過程(紅線)，以及每次試驗的值(藍點)：<br />
+<img src="images/day-15/05.png" alt="https://ithelp.ithome.com.tw/upload/images/20240507/20151029J8vjcFFyFj.png" /><br />
+另外也有另一種快速入門的方式可以繪製，程式如下：</p>
+<pre><code>fig = optuna.visualization.plot_optimization_history(study1)
+fig.show()
+</code></pre>
+<p>執行時會開啟一個視窗，並可以提供使用者使用右上角的工具列對繪圖結果進行編輯例如放大縮小，或者特定區域放大還有儲存成圖片等功能，儲存後的圖片如下。<br />
+<img src="images/day-15/06.png" alt="https://ithelp.ithome.com.tw/upload/images/20240507/20151029mbUVseyTOr.png" /></p>
+<p>下圖為程式開啟視窗後會出現於右上角的工具列以及儲存圖片的功能鈕。<br />
+<img src="images/day-15/07.png" alt="https://ithelp.ithome.com.tw/upload/images/20240507/20151029zuVaodgaNp.png" /></p>
+</li>
+<li>
+<p><strong>繪製超參數因素重要性</strong>：隨著試驗次數增加，可以更準確的計算出試驗中不同因素對最佳值搜索的重要性，若該因素重要性低就可以在之後實驗捨棄掉該因素，讓最佳化可以更簡便。程式碼如下：</p>
+<pre><code>import matplotlib.pyplot as plt
+optuna.visualization.matplotlib.plot_param_importances(study1)
+plt.show()
+</code></pre>
+<p>結果如下，因為使用測試函數所以基本上每個參數都是必不可缺的，不過在之後深度學習模型最佳化就可以用這種方式刪除掉不重要的因素。<br />
+<img src="images/day-15/08.png" alt="https://ithelp.ithome.com.tw/upload/images/20240507/20151029C5ozd5oS6D.png" /></p>
+</li>
+</ul>
+<h2 id="結語"><a class="header" href="#結語">結語</a></h2>
+<p>今天花了蠻多時間介紹Optuna的其他功能，基本上官方的說明文件裡面還有許多功能可以開發，不過我覺得在目前階段這些功能應該就足夠了。明天會來帶各位用這兩天學習到的內容來進行更多的演練，使各位可以更加清楚這個套件的功能，與程式開發時的一些技巧與步驟等。</p>
+<h2 id="附錄完整程式多目標最佳化"><a class="header" href="#附錄完整程式多目標最佳化">附錄：完整程式(多目標最佳化)</a></h2>
+<pre><code>import matplotlib.pyplot as plt
+import optuna
+import numpy as np
+from typing import Union
+
+def schaffer_function_N2(x: Union[np.ndarray, list]):
+    assert len(x) == 2, 'x的長度必須為2!'
+    return 0.5 + (np.sin(x[0]**2-x[1]**2)**2 - 0.5) / (1+0.001*(x[0]**2+x[1]**2))**2
+
+def objective(trial, high, low):
+    x1 = trial.suggest_float('x1', low, high)
+    x2 = trial.suggest_float('x2', low, high)
+    x = [x1, x2]
+    return schaffer_function_N2(x), x1+x2
+
+study = optuna.create_study(directions=['minimize', 'maximize'])
+study.optimize(lambda trial: objective(trial, 10, -10), n_trials=500)
+
+# print出歷史較佳解
+for i in range(len(study.best_trials)):
+    print(f'試驗歷史較佳解-{i}：', study.best_trials[i].params)
+    print(f'試驗歷史較佳適應值-{i}：', study.best_trials[i].values)
+    print('---我是分隔線---')
+
+# 繪製帕雷托前沿(Pareto Front)結果圖
+optuna.visualization.matplotlib.plot_pareto_front(study)
+plt.show()
+</code></pre>
+<h2 id="附錄完整程式繪圖部分"><a class="header" href="#附錄完整程式繪圖部分">附錄：完整程式(繪圖部分)</a></h2>
+<pre><code>import matplotlib.pyplot as plt
+import optuna
+import numpy as np
+from typing import Union
+
+def schaffer_function_N2(x: Union[np.ndarray, list]):
+    assert len(x) == 2, 'x的長度必須為2!'
+    return 0.5 + (np.sin(x[0]**2-x[1]**2)**2 - 0.5) / (1+0.001*(x[0]**2+x[1]**2))**2
+
+def objective(trial, high, low):
+    x1 = trial.suggest_float('x1', low, high)
+    x2 = trial.suggest_float('x2', low, high)
+    x = [x1, x2]
+    return schaffer_function_N2(x)
+
+sampler = optuna.samplers.TPESampler(seed=10)
+study1 = optuna.create_study(study_name='study 1', direction='minimize', sampler=sampler)
+study1.optimize(lambda trial: objective(trial, 10, -10), n_trials=100)
+study2 = optuna.create_study(study_name='study 2', direction='minimize', sampler=sampler)
+study2.optimize(lambda trial: objective(trial, 100, -100), n_trials=100)
+
+print('第一組試驗歷史最佳適應值：', study1.best_value)
+print('第一組試驗歷史最佳解：', study1.best_params)
+print('第二組試驗歷史最佳適應值：', study2.best_value)
+print('第二組試驗歷史最佳解：', study2.best_params)
+
+# 繪製參數關係等高線圖
+optuna.visualization.matplotlib.plot_contour(study1)
+plt.show()
+# 繪製目標經驗分布函數(EDF)圖
+optuna.visualization.matplotlib.plot_edf([study1, study2])
+plt.show()
+# 繪製高維度參數關係圖
+optuna.visualization.matplotlib.plot_parallel_coordinate(study1)
+plt.show()
+# 繪製試驗的最佳化過程
+optuna.visualization.matplotlib.plot_optimization_history(study1)
+plt.tight_layout()
+plt.show()
+# 繪製試驗的最佳化過程(另一種開啟視窗並編輯&amp;儲存的方式)
+fig = optuna.visualization.plot_optimization_history(study1)
+fig.show()
+# 繪製超參數因素重要性
+optuna.visualization.matplotlib.plot_param_importances(study1)
+plt.show()
+</code></pre>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="day-14.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="day-16.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="day-14.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="day-16.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
+
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    </body>
+</html>
